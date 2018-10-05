@@ -8,6 +8,7 @@ output: html_document
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 library(readxl)
+library(dplyr)
 ```
 # Read Data
 
@@ -18,13 +19,48 @@ X1992_results <- read_excel("Data/General Election 1992-2016/1992_results.xls")
 X1994_results <- read_excel("Data/General Election 1992-2016/1994_results.xls")
 X1996_results <- read_excel("Data/General Election 1992-2016/1996_results.xls")
 X1998_results <- read_excel("Data/General Election 1992-2016/1998_results.xls")
-X2000_results <- read_excel("Data/General Election 1992-2016/2000_results.xls")
+X2000_results <- read_excel("Data/General Election 1992-2016/2000_results.xls", guess_max = 4076)
 X2002_results <- read_excel("Data/General Election 1992-2016/2002_results.xls")
 X2004_results <- read_excel("Data/General Election 1992-2016/2004_results.xls")
-X2006_results <- read_excel("Data/General Election 1992-2016/2006_results.xls")
-X2008_results <- read_excel("Data/General Election 1992-2016/2008_results.xls")
+X2006_results <- read_excel("Data/General Election 1992-2016/2006_results.xls", guess_max = 4125)
+X2008_results <- read_excel("Data/General Election 1992-2016/2008_results.xls", guess_max = 4133)
 X2010_results <- read_excel("Data/General Election 1992-2016/2010_results.xls")
-X2012_results <- read_excel("Data/General Election 1992-2016/2012_results.xlsx",guess_max = 4000)
-X2014_results <- read_excel("Data/General Election 1992-2016/2014_results.xlsx",guess_max = 4000)
-X2016_results <- read_excel("Data/General Election 1992-2016/2016_results.xlsx",guess_max = 4000)
+X2012_results <- read_excel("Data/General Election 1992-2016/2012_results.xlsx",guess_max = 4103)
+X2014_results <- read_excel("Data/General Election 1992-2016/2014_results.xlsx",guess_max = 4106)
+X2016_results <- read_excel("Data/General Election 1992-2016/2016_results.xlsx",guess_max = 4121)
+```
+
+```{r}
+CountID.Name <- X2016_results %>% 
+  select(COUNTYCODE, COUNTYNAME)
+CountID.Name <- unique(CountID.Name)
+```
+
+# Merge Precinct data into County
+```{r}
+colnames(X1992_results)[which(colnames(X1992_results) == '7am')] = 'reg'
+county.1992 <- X1992_results %>%
+  group_by(CC) %>%
+  summarise(reg = sum(reg), 
+            turnout = sum(Signatures),
+            PresIR = sum(PresIR),
+            PresDFL = sum(PresDFL),
+            PresOther = sum(PresOther),
+            CongIR = sum(CongIR),
+            CongDFL = sum(CongDFL),
+            CongOther = sum(CongOther),
+            MNSenIR = sum(MNSenIR),
+            MNSenDFL = sum(MNSenDFL),
+            MNSenOther = sum(MNSenOther),
+            MNLegIR = sum(MNLegIR),
+            MNLegDFL = sum(MNLegDFL),
+            MNLegOther = sum(MNLegOther)
+            )
+colnames(county.1992)[1] <- 'COUNTYCODE'
+
+colnames(X1994_results)[which(colnames(X1994_results) == '7am')] = 'reg'
+
+county.1994 <- X1994_results %>%
+  group_by(CC) %>%
+  summarise()
 ```
