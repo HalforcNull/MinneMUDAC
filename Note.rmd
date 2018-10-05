@@ -1,0 +1,30 @@
+---
+title: "Population vs. Vote"
+author: "Runan Yao"
+date: "October 5, 2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(readxl)
+```
+# Read Data
+
+## General Election Data
+
+```{r}
+X1992_results <- read_excel("Data/General Election 1992-2016/1992_results.xls")
+X1994_results <- read_excel("Data/General Election 1992-2016/1994_results.xls")
+X1996_results <- read_excel("Data/General Election 1992-2016/1996_results.xls")
+X1998_results <- read_excel("Data/General Election 1992-2016/1998_results.xls")
+X2000_results <- read_excel("Data/General Election 1992-2016/2000_results.xls")
+X2002_results <- read_excel("Data/General Election 1992-2016/2002_results.xls")
+X2004_results <- read_excel("Data/General Election 1992-2016/2004_results.xls")
+X2006_results <- read_excel("Data/General Election 1992-2016/2006_results.xls")
+X2008_results <- read_excel("Data/General Election 1992-2016/2008_results.xls")
+X2010_results <- read_excel("Data/General Election 1992-2016/2010_results.xls")
+X2012_results <- read_excel("Data/General Election 1992-2016/2012_results.xlsx",guess_max = 4000)
+X2014_results <- read_excel("Data/General Election 1992-2016/2014_results.xlsx",guess_max = 4000)
+X2016_results <- read_excel("Data/General Election 1992-2016/2016_results.xlsx",guess_max = 4000)
+```
