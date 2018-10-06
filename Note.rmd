@@ -40,7 +40,7 @@ CountID.Name <- unique(CountID.Name)
 ```{r}
 colnames(X1992_results)[which(colnames(X1992_results) == '7am')] = 'reg'
 county.1992 <- X1992_results %>%
-  group_by(CC) %>%
+  group_by(FIPS) %>%
   summarise(reg = sum(reg), 
             turnout = sum(Signatures),
             PresIR = sum(PresIR),
@@ -48,19 +48,66 @@ county.1992 <- X1992_results %>%
             PresOther = sum(PresOther),
             CongIR = sum(CongIR),
             CongDFL = sum(CongDFL),
-            CongOther = sum(CongOther),
-            MNSenIR = sum(MNSenIR),
-            MNSenDFL = sum(MNSenDFL),
-            MNSenOther = sum(MNSenOther),
-            MNLegIR = sum(MNLegIR),
-            MNLegDFL = sum(MNLegDFL),
-            MNLegOther = sum(MNLegOther)
+            CongOther = sum(CongOther)
             )
-colnames(county.1992)[1] <- 'COUNTYCODE'
+colnames(county.1992)[1] <- 'FIPS'
 
 colnames(X1994_results)[which(colnames(X1994_results) == '7am')] = 'reg'
 
 county.1994 <- X1994_results %>%
-  group_by(CC) %>%
-  summarise()
+  group_by(FIPS) %>%
+  summarise(reg = sum(reg),
+            turnout = sum(Signatures),
+            USSenIR = sum(USSenIR),
+            USSenDFL = sum(USSenDFL),
+            USSenOther = sum(USSenOther),
+            CongIR = sum(CongIR),
+            CongDFL = sum(CongDFL),
+            CongOther = sum(CongOther),            
+            GovIR = sum(GovIR),
+            GovDFL = sum(GovDFL),
+            GovOther = sum(GovOther)   
+            )
+colnames(county.1994)[1] <- 'FIPS'
+
+colnames(X1996_results)[which(colnames(X1996_results) == '7am')] = 'reg'
+
+county.1996 <- X1996_results %>%
+  group_by(FIPS) %>%
+  summarise(reg = sum(reg),
+            turnout = sum(Signatures),
+            PresIR = sum(PresIR),
+            PresDFL = sum(PresDFL),
+            PresOther = sum(PresOther),
+            CongIR = sum(CongIR),
+            CongDFL = sum(CongDFL),
+            CongOther = sum(CongOther) 
+            )
+colnames(county.1996)[1] <- 'FIPS'
+
+colnames(X1998_results)[which(colnames(X1998_results) == '7am')] = 'reg'
+
+county.1998 <- X1998_results %>%
+  group_by(FIPS) %>%
+  summarise(reg = sum(reg),
+            turnout = sum(Signatures),
+            USSenIR = sum(USSenIR),
+            USSenDFL = sum(USSenDFL),
+            USSenOther = sum(USSenOther),
+            CongIR = sum(CongIR),
+            CongDFL = sum(CongDFL),
+            CongOther = sum(CongOther),            
+            GovIR = sum(GovIR),
+            GovDFL = sum(GovDFL),
+            GovOther = sum(GovOther)   
+            )
+colnames(county.1998)[1] <- 'FIPS'
+
+
+
+
+
+
+
+
 ```
