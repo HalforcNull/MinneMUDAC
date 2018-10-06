@@ -37,6 +37,7 @@ CountID.Name <- unique(CountID.Name)
 ```
 
 # Merge Precinct data into County
+
 ```{r}
 colnames(X1992_results)[which(colnames(X1992_results) == '7am')] = 'reg'
 county.1992 <- X1992_results %>%
@@ -90,10 +91,7 @@ colnames(X1998_results)[which(colnames(X1998_results) == '7am')] = 'reg'
 county.1998 <- X1998_results %>%
   group_by(FIPS) %>%
   summarise(reg = sum(reg),
-            turnout = sum(Signatures),
-            USSenIR = sum(USSenIR),
-            USSenDFL = sum(USSenDFL),
-            USSenOther = sum(USSenOther),
+            turnout = sum(Ballots),
             CongIR = sum(CongIR),
             CongDFL = sum(CongDFL),
             CongOther = sum(CongOther),            
@@ -103,11 +101,24 @@ county.1998 <- X1998_results %>%
             )
 colnames(county.1998)[1] <- 'FIPS'
 
+# colnames(X2000_results)[which(colnames(X2000_results) == '7am')] = 'reg'
+# 
+# 
+# county.2000 <- X2000_results %>%
+#   group_by(CC) %>% 
+#   summarise(reg)
+
+
+
+colnames(X2004_results)[which(colnames(X2004_results) == '7am')] = 'reg'
+
+
+```
 
 
 
 
-
+```{r}
 
 
 ```
