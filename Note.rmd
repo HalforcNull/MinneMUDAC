@@ -116,12 +116,12 @@ colnames(county.1998)[1] <- 'FIPS'
 #             )
 # colnames(county.1998)[1] <- 'FIPS'
 
-colnames(X2002_results)[which(colnames(X2002_results) == 'Registered\nat 7AM')] = 'reg'
+colnames(X2002_results)[which(colnames(X2002_results) == '7am')] = 'reg'
 
-county.2006 <- X2006_results %>%
-  group_by(County_ID) %>%
-  summarise(reg = sum(as.numeric(reg), na.rm = TRUE),
-            turnout = sum(as.numeric(Signature), na.rm = TRUE),
+county.2002 <- X2002_results %>%
+  group_by(CC) %>%
+  summarise(reg = sum(reg, na.rm = TRUE),
+            turnout = sum(Ballots),
             CongIR = sum(as.numeric(CongR), na.rm = TRUE),
             CongDFL = sum(as.numeric(CongDFL), na.rm = TRUE),
             CongAll = sum(as.numeric(CongTOT), na.rm = TRUE),
