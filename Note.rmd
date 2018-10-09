@@ -110,8 +110,20 @@ colnames(county.1998)[1] <- 'FIPS'
 
 
 
-colnames(X2004_results)[which(colnames(X2004_results) == '7am')] = 'reg'
+colnames(X2004_results)[which(colnames(X2004_results) == '7AM')] = 'reg'
 
+county.2004 <- X2004_results %>%
+  group_by(FIPS) %>%
+  summarise(reg = sum(reg),
+            turnout = sum(Sigs),
+            PresIR = sum(USPresR),
+            PresDFL = sum(USPresDFL),
+            PresOther = sum(USPresGP) + sum(USPresSE) + sum(USPresSW) + sum(USPresCF) + sum(USPresBL) + sum(USPresC) + sum(USPresL) + sum(USPresWI),
+            CongIR = sum(USCongR),
+            CongDFL = sum(USCongDFL),
+            CongOther = sum(USCongI) + sum(USCongWI)
+            )
+colnames(county.2004)[1] <- 'FIPS'
 
 ```
 
