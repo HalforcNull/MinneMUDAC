@@ -124,12 +124,12 @@ county.2002 <- X2002_results %>%
             turnout = sum(Ballots),
             CongIR = sum(as.numeric(CongR), na.rm = TRUE),
             CongDFL = sum(as.numeric(CongDFL), na.rm = TRUE),
-            CongAll = sum(as.numeric(CongTOT), na.rm = TRUE),
+#            CongAll = sum(as.numeric(CongTOT), na.rm = TRUE),
             GovIR = sum(as.numeric(GovR), na.rm = TRUE),
-            GovDFL = sum(as.numeric(GovDFL), na.rm = TRUE),
-            GovAll = sum(as.numeric(GovTOT), na.rm = TRUE)
+            GovDFL = sum(as.numeric(GovDFL), na.rm = TRUE)#,
+ #           GovAll = sum(as.numeric(GovTOT), na.rm = TRUE)
             )
-colnames(county.2006)[1] <- 'CC'
+colnames(county.2002)[1] <- 'CC'
 
 
 colnames(X2004_results)[which(colnames(X2004_results) == '7AM')] = 'reg'
@@ -197,7 +197,7 @@ colnames(X2014_results)[which(colnames(X2014_results) == 'REG7AM')] = 'reg'
 county.2014 <- X2014_results %>%
   group_by(COUNTYCODE) %>%
   summarise(reg = sum(reg),
-            turnout = sum(Signatures),
+            turnout = sum(TOTVOTING),
             CongIR = sum(USREPR),
             CongDFL = sum(USREPDFL),
             CongALL = sum(USREPTOTAL),            
