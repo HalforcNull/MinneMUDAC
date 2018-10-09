@@ -108,12 +108,24 @@ colnames(county.1998)[1] <- 'FIPS'
 #   group_by(CC) %>% 
 #   summarise(reg)
 
+# county.1998 <- X1998_results %>%
+#   group_by(FIPS) %>%
+#   summarise(reg = sum(reg),
+#             turnout = sum(Ballots),
+#             CongIR = sum(CongIR),
+#             CongDFL = sum(CongDFL),
+#             CongOther = sum(CongOther),            
+#             GovIR = sum(GovIR),
+#             GovDFL = sum(GovDFL),
+#             GovOther = sum(GovOther)   
+#             )
+# colnames(county.1998)[1] <- 'FIPS'
 
 
 colnames(X2004_results)[which(colnames(X2004_results) == '7AM')] = 'reg'
 
 county.2004 <- X2004_results %>%
-  group_by(FIPS) %>%
+  group_by(CC) %>%
   summarise(reg = sum(reg),
             turnout = sum(Sigs),
             PresIR = sum(USPresR),
@@ -123,7 +135,52 @@ county.2004 <- X2004_results %>%
             CongDFL = sum(USCongDFL),
             CongOther = sum(USCongI) + sum(USCongWI)
             )
-colnames(county.2004)[1] <- 'FIPS'
+colnames(county.2004)[1] <- 'CC'
+
+colnames(X2006_results)[which(colnames(X2006_results) == 'Registered\nat 7AM')] = 'reg'
+
+county.2006 <- X2006_results %>%
+  group_by(County_ID) %>%
+  summarise(reg = sum(as.numeric(reg), na.rm = TRUE),
+            turnout = sum(as.numeric(Signature), na.rm = TRUE),
+            CongIR = sum(as.numeric(CongR), na.rm = TRUE),
+            CongDFL = sum(as.numeric(CongDFL), na.rm = TRUE),
+            CongOther = sum(as.numeric(CongIP), na.rm = TRUE) + sum(as.numeric(CongWI), na.rm = TRUE) + sum(as.numeric(CongTOT), na.rm = TRUE), 
+            GovIR = sum(as.numeric(GovR), na.rm = TRUE),
+            GovDFL = sum(as.numeric(GovDFL), na.rm = TRUE),
+            GovOther = sum(as.numeric(GovIP), na.rm = TRUE) + sum(as.numeric(GovWI), na.rm = TRUE) + sum(as.numeric(GovTOT), na.rm = TRUE)
+            )
+colnames(county.2006)[1] <- 'CC'
+
+colnames(X2008_results)[which(colnames(X2008_results) == '7AM')] = 'reg'
+
+county.2008 <- X2008_results %>%
+  group_by(CountyID) %>%
+  summarise(reg = sum(reg),
+            turnout = sum(Signatures),
+            PresIR = sum(USPRESR),
+            PresDFL = sum(USPRESDFL),
+            PresOther = sum(USPRESGP) + sum(USPRESSWP) + sum(USPRESIND) + sum(USPRESLIB) + sum(USPRESCP) + sum(USPRESWI) + sum(USPRESTOT),
+            CongIR = sum(CONGR),
+            CongDFL = sum(CONGDFL)#,
+            #CongOther = sum(USCongI) + sum(USCongWI)
+            )
+colnames(county.2008)[1] <- 'CC'
+
+colnames(X2010_results)[which(colnames(X2010_results) == '7AM')] = 'reg'
+
+county.2010 <- X2010_results %>%
+  group_by(CountyID) %>%
+  summarise(reg = sum(reg),
+            turnout = sum(Signatures),
+            CongIR = sum(CONGR),
+            CongDFL = sum(CONGDFL),
+            #CongOther = sum(CongOther),            
+            GovIR = sum(GOVR),
+            GovDFL = sum(GOVDFL)
+            #GovOther = sum(GovOther)   
+            )
+colnames(county.2010)[1] <- 'CC'
 
 ```
 
