@@ -216,6 +216,7 @@ summary(county.2004)
 
 ```{r}
 colnames(X2006_results)[which(colnames(X2006_results) == 'Registered\nat 7AM')] = 'reg'
+X2006_results <- X2006_results[-which(X2006_results[,1] == 'Precinct\nName' ),]
 
 county.2006 <- X2006_results %>%
   group_by(County_ID) %>%
@@ -358,3 +359,7 @@ colnames(county.2016)[1] <- 'CC'
 summary(county.2016)
 
 ```
+
+
+
+# 
