@@ -38,6 +38,7 @@ CountID.Name <- unique(CountID.Name)
 
 # Merge Precinct data into County
 
+## 1992
 ```{r}
 colnames(X1992_results)[which(colnames(X1992_results) == '7am')] = 'reg'
 county.1992 <- X1992_results %>%
@@ -53,6 +54,14 @@ county.1992 <- X1992_results %>%
             )
 colnames(county.1992)[1] <- 'FIPS'
 
+summary(county.1992)
+
+```
+
+## 1994
+
+
+```{r}
 colnames(X1994_results)[which(colnames(X1994_results) == '7am')] = 'reg'
 
 county.1994 <- X1994_results %>%
@@ -71,6 +80,14 @@ county.1994 <- X1994_results %>%
             )
 colnames(county.1994)[1] <- 'FIPS'
 
+summary(county.1994)
+
+```
+
+
+## 1996
+
+```{r}
 colnames(X1996_results)[which(colnames(X1996_results) == '7am')] = 'reg'
 
 county.1996 <- X1996_results %>%
@@ -80,12 +97,22 @@ county.1996 <- X1996_results %>%
             PresIR = sum(PresIR),
             PresDFL = sum(PresDFL),
             PresOther = sum(PresOther),
+            USSenIR = sum(USSenIR),
+            USSenDFL = sum(USSenDFL),
+            USSenOther = sum(USSenOther),
             CongIR = sum(CongIR),
             CongDFL = sum(CongDFL),
             CongOther = sum(CongOther) 
             )
 colnames(county.1996)[1] <- 'FIPS'
 
+summary(county.1996)
+```
+
+
+## 1998
+
+```{r}
 colnames(X1998_results)[which(colnames(X1998_results) == '7am')] = 'reg'
 
 county.1998 <- X1998_results %>%
@@ -101,21 +128,34 @@ county.1998 <- X1998_results %>%
             )
 colnames(county.1998)[1] <- 'FIPS'
 
+summary(county.1998)
+```
 
-# colnames(X2000_results)[which(colnames(X2000_results) == '7am')] = 'reg'
-# county.1998 <- X1998_results %>%
-#   group_by(FIPS) %>%
-#   summarise(reg = sum(reg),
-#             turnout = sum(Ballots),
-#             CongIR = sum(CongIR),
-#             CongDFL = sum(CongDFL),
-#             CongOther = sum(CongOther),            
-#             GovIR = sum(GovIR),
-#             GovDFL = sum(GovDFL),
-#             GovOther = sum(GovOther)   
-#             )
-# colnames(county.1998)[1] <- 'FIPS'
+## 2000
+```{r}
+colnames(X2000_results)[which(colnames(X2000_results) == '7am')] = 'reg'
+county.2000 <- X2000_results %>%
+  group_by(CC) %>%
+  summarise(reg = sum(reg),
+            turnout = sum(Sign),
+            PresIR = sum(R_PREZ),
+            PresDFL = sum(DFL_PREZ),
+            PresOther = sum(ALL_OTHER_PREZ),
+            CongIR = sum(R_CONG),
+            CongDFL = sum(DFL_CONG),
+            CongOther = sum(OTHER_CONG),
+            USSenIR = sum(R_USSEN),
+            USSenDFL = sum(DFL_USSEN),
+            USSenOther = sum(OTHER_USSEN)
+            )
+colnames(X2000_results)[1] <- 'CC'
 
+summary(county.2000)
+```
+
+
+## 2002
+```{r}
 colnames(X2002_results)[which(colnames(X2002_results) == '7am')] = 'reg'
 
 county.2002 <- X2002_results %>%
@@ -124,13 +164,35 @@ county.2002 <- X2002_results %>%
             turnout = sum(Ballots),
             CongIR = sum(as.numeric(CongR), na.rm = TRUE),
             CongDFL = sum(as.numeric(CongDFL), na.rm = TRUE),
-#            CongAll = sum(as.numeric(CongTOT), na.rm = TRUE),
+            CongAll = 
+              sum(as.numeric(CongGP), na.rm = TRUE) + 
+              sum(as.numeric(CongIP), na.rm = TRUE) + 
+              sum(as.numeric(CongNNT), na.rm = TRUE) + 
+              sum(as.numeric(CongWI), na.rm = TRUE),
             GovIR = sum(as.numeric(GovR), na.rm = TRUE),
-            GovDFL = sum(as.numeric(GovDFL), na.rm = TRUE)#,
- #           GovAll = sum(as.numeric(GovTOT), na.rm = TRUE)
+            GovDFL = sum(as.numeric(GovDFL), na.rm = TRUE),
+            GovAll = 
+              sum(as.numeric(GovGP), na.rm = TRUE) +
+              sum(as.numeric(GovIP), na.rm = TRUE) +
+              sum(as.numeric(GovCP), na.rm = TRUE) +
+              sum(as.numeric(GovI), na.rm = TRUE) +
+              sum(as.numeric(GovSW), na.rm = TRUE) +
+              sum(as.numeric(GovWI), na.rm = TRUE),
+            USSenIR = sum(as.numeric(USSenR), na.rm = TRUE),
+            USSenDFL = sum(as.numeric(USSenDFL), na.rm = TRUE),
+            USSenOther = 
+              sum(as.numeric(USSenGP), na.rm = TRUE) +
+              sum(as.numeric(USSenIP), na.rm = TRUE) + 
+              sum(as.numeric(USSenCP), na.rm = TRUE) +
+              sum(as.numeric(USSenWI), na.rm = TRUE)
             )
 colnames(county.2002)[1] <- 'CC'
+summary(county.2002)
 
+```
+
+## 2004
+```{r}
 
 colnames(X2004_results)[which(colnames(X2004_results) == '7AM')] = 'reg'
 
@@ -143,10 +205,16 @@ county.2004 <- X2004_results %>%
             PresOther = sum(USPresGP) + sum(USPresSE) + sum(USPresSW) + sum(USPresCF) + sum(USPresBL) + sum(USPresC) + sum(USPresL) + sum(USPresWI),
             CongIR = sum(USCongR),
             CongDFL = sum(USCongDFL),
-            CongOther = sum(USCongI) + sum(USCongWI)
+            CongOther = sum(USCongI) + sum(USCongWI) + sum(USCongGr)
             )
 colnames(county.2004)[1] <- 'CC'
 
+summary(county.2004)
+```
+
+## 2006
+
+```{r}
 colnames(X2006_results)[which(colnames(X2006_results) == 'Registered\nat 7AM')] = 'reg'
 
 county.2006 <- X2006_results %>%
@@ -156,12 +224,23 @@ county.2006 <- X2006_results %>%
             CongIR = sum(as.numeric(CongR), na.rm = TRUE),
             CongDFL = sum(as.numeric(CongDFL), na.rm = TRUE),
             CongAll = sum(as.numeric(CongTOT), na.rm = TRUE),
+            USSenIR = sum(as.numeric(USSenR), na.rm = TRUE),
+            USSenDFL = sum(as.numeric(USSenDFL), na.rm = TRUE),
+            USSenAll = sum(as.numeric(USSenTOT), na.rm = TRUE),
             GovIR = sum(as.numeric(GovR), na.rm = TRUE),
             GovDFL = sum(as.numeric(GovDFL), na.rm = TRUE),
             GovAll = sum(as.numeric(GovTOT), na.rm = TRUE)
             )
 colnames(county.2006)[1] <- 'CC'
 
+summary(county.2006)
+
+```
+
+
+## 2008
+
+```{r}
 colnames(X2008_results)[which(colnames(X2008_results) == '7AM')] = 'reg'
 
 county.2008 <- X2008_results %>%
@@ -171,11 +250,22 @@ county.2008 <- X2008_results %>%
             PresIR = sum(USPRESR),
             PresDFL = sum(USPRESDFL),
             PresALL = sum(USPRESTOT),
+            USSenIR = sum(USSENR),
+            USSenDFL = sum(USSENDFL),
+            USSenAll = sum(USSENTOT),
             CongIR = sum(CONGR),
             CongDFL = sum(CONGDFL),
             CongALL = sum(CONGTOT)
             )
 colnames(county.2008)[1] <- 'CC'
+
+summary(county.2008)
+
+```
+
+## 2010
+
+```{r}
 
 colnames(X2010_results)[which(colnames(X2010_results) == '7AM')] = 'reg'
 
@@ -185,13 +275,45 @@ county.2010 <- X2010_results %>%
             turnout = sum(TotVoters),
             CongIR = sum(CONGR),
             CongDFL = sum(CONGDFL),
-            CongALL = sum(CONGTOT),            
+            CongAll = sum(CONGTOT),            
             GovIR = sum(GOVR),
             GovDFL = sum(GOVDFL),
-            GovALL = sum(GOVTOT)   
+            GovAll = sum(GOVTOT)   
             )
 colnames(county.2010)[1] <- 'CC'
 
+summary(county.2010)
+
+```
+
+## 2012
+
+```{r}
+colnames(X2012_results)[which(colnames(X2012_results) == '7AM')] = 'reg'
+
+county.2012 <- X2012_results %>%
+  group_by(COUNTYCODE) %>%
+  summarise(reg = sum(reg),
+            turnout = sum(TOTVOTING),
+            PresIR = sum(USPRSR),
+            PresDFL = sum(USPRSDFL),
+            PresALL = sum(USPRSTOTAL),
+            USSenIR = sum(USSENR),
+            USSenDFL = sum(USSENDFL),
+            USSenAll = sum(USSENTOTAL),
+            CongIR = sum(USREPR),
+            CongDFL = sum(USREPDFL),
+            CongALL = sum(USREPTOTAL)
+            )
+colnames(county.2012)[1] <- 'CC'
+
+summary(county.2012)
+
+```
+
+
+# 2014
+```{r}
 colnames(X2014_results)[which(colnames(X2014_results) == 'REG7AM')] = 'reg'
 
 county.2014 <- X2014_results %>%
@@ -201,18 +323,38 @@ county.2014 <- X2014_results %>%
             CongIR = sum(USREPR),
             CongDFL = sum(USREPDFL),
             CongALL = sum(USREPTOTAL),            
+            USSenIR = sum(USSENR),
+            USSenDFL = sum(USSENDFL),
+            USSenAll = sum(USSENTOTAL),
             GovIR = sum(MNGOVR),
             GovDFL = sum(MNGOVDFL),
             GovALL = sum(MNGOVTOTAL)   
             )
 colnames(county.2014)[1] <- 'CC'
 
+summary(county.2014)
+
 ```
 
 
-
+## 2016 
 
 ```{r}
+colnames(X2016_results)[which(colnames(X2016_results) == 'REG7AM')] = 'reg'
 
+county.2016 <- X2016_results %>%
+  group_by(COUNTYCODE) %>%
+  summarise(reg = sum(reg),
+            turnout = sum(TOTVOTING),
+            PresIR = sum(USPRSR),
+            PresDFL = sum(USPRSDFL),
+            PresALL = sum(USPRSTOTAL),
+            CongIR = sum(USREPR),
+            CongDFL = sum(USREPDFL),
+            CongALL = sum(USREPTOTAL)
+            )
+colnames(county.2016)[1] <- 'CC'
+
+summary(county.2016)
 
 ```
