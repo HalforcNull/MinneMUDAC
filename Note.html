@@ -458,6 +458,7 @@ summary(county.2004)</code></pre>
 <div id="section-7" class="section level2">
 <h2>2006</h2>
 <pre class="r"><code>colnames(X2006_results)[which(colnames(X2006_results) == 'Registered\nat 7AM')] = 'reg'
+X2006_results &lt;- X2006_results[-which(X2006_results[,1] == 'Precinct\nName' ),]
 
 county.2006 &lt;- X2006_results %&gt;%
   group_by(County_ID) %&gt;%
@@ -472,52 +473,30 @@ county.2006 &lt;- X2006_results %&gt;%
             GovIR = sum(as.numeric(GovR), na.rm = TRUE),
             GovDFL = sum(as.numeric(GovDFL), na.rm = TRUE),
             GovAll = sum(as.numeric(GovTOT), na.rm = TRUE)
-            )</code></pre>
-<pre><code>## Warning in evalq(sum(as.numeric(reg), na.rm = TRUE), &lt;environment&gt;): NAs
-## introduced by coercion</code></pre>
-<pre><code>## Warning in evalq(sum(as.numeric(TotVoters), na.rm = TRUE), &lt;environment&gt;):
-## NAs introduced by coercion</code></pre>
-<pre><code>## Warning in evalq(sum(as.numeric(CongR), na.rm = TRUE), &lt;environment&gt;): NAs
-## introduced by coercion</code></pre>
-<pre><code>## Warning in evalq(sum(as.numeric(CongDFL), na.rm = TRUE), &lt;environment&gt;):
-## NAs introduced by coercion</code></pre>
-<pre><code>## Warning in evalq(sum(as.numeric(CongTOT), na.rm = TRUE), &lt;environment&gt;):
-## NAs introduced by coercion</code></pre>
-<pre><code>## Warning in evalq(sum(as.numeric(USSenR), na.rm = TRUE), &lt;environment&gt;): NAs
-## introduced by coercion</code></pre>
-<pre><code>## Warning in evalq(sum(as.numeric(USSenDFL), na.rm = TRUE), &lt;environment&gt;):
-## NAs introduced by coercion</code></pre>
-<pre><code>## Warning in evalq(sum(as.numeric(USSenTOT), na.rm = TRUE), &lt;environment&gt;):
-## NAs introduced by coercion</code></pre>
-<pre><code>## Warning in evalq(sum(as.numeric(GovR), na.rm = TRUE), &lt;environment&gt;): NAs
-## introduced by coercion</code></pre>
-<pre><code>## Warning in evalq(sum(as.numeric(GovDFL), na.rm = TRUE), &lt;environment&gt;): NAs
-## introduced by coercion</code></pre>
-<pre><code>## Warning in evalq(sum(as.numeric(GovTOT), na.rm = TRUE), &lt;environment&gt;): NAs
-## introduced by coercion</code></pre>
-<pre class="r"><code>colnames(county.2006)[1] &lt;- 'CC'
+            )
+colnames(county.2006)[1] &lt;- 'CC'
 
 summary(county.2006)</code></pre>
 <pre><code>##       CC                 reg             turnout            CongIR      
-##  Length:89          Min.   :      0   Min.   :      0   Min.   :     0  
-##  Class :character   1st Qu.:   6740   1st Qu.:   5029   1st Qu.:  1554  
-##  Mode  :character   Median :  13401   Median :   9543   Median :  3892  
-##                     Mean   :  70076   Mean   :  49839   Mean   : 20778  
-##                     3rd Qu.:  23846   3rd Qu.:  18054   3rd Qu.:  6541  
+##  Length:88          Min.   :   2434   Min.   :   1905   Min.   :   254  
+##  Class :character   1st Qu.:   6835   1st Qu.:   5164   1st Qu.:  1766  
+##  Mode  :character   Median :  13644   Median :   9748   Median :  3953  
+##                     Mean   :  70873   Mean   :  50405   Mean   : 21015  
+##                     3rd Qu.:  24547   3rd Qu.:  18435   3rd Qu.:  6694  
 ##                     Max.   :3118398   Max.   :2217818   Max.   :924636  
 ##     CongDFL           CongAll           USSenIR          USSenDFL      
-##  Min.   :      0   Min.   :      0   Min.   :     0   Min.   :      0  
-##  1st Qu.:   3429   1st Qu.:   4992   1st Qu.:  1936   1st Qu.:   2771  
-##  Median :   5101   Median :   9388   Median :  4268   Median :   5204  
-##  Mean   :  25902   Mean   :  48966   Mean   : 18779   Mean   :  28738  
-##  3rd Qu.:  11247   3rd Qu.:  17702   3rd Qu.:  7474   3rd Qu.:  10450  
+##  Min.   :   1421   Min.   :   1868   Min.   :   657   Min.   :   1032  
+##  1st Qu.:   3440   1st Qu.:   5103   1st Qu.:  1975   1st Qu.:   2789  
+##  Median :   5132   Median :   9561   Median :  4280   Median :   5217  
+##  Mean   :  26196   Mean   :  49522   Mean   : 18992   Mean   :  29065  
+##  3rd Qu.:  11300   3rd Qu.:  18118   3rd Qu.:  7479   3rd Qu.:  10595  
 ##  Max.   :1152621   Max.   :2178974   Max.   :835653   Max.   :1278849  
 ##     USSenAll           GovIR             GovDFL            GovAll       
-##  Min.   :      0   Min.   :      0   Min.   :      0   Min.   :      0  
-##  1st Qu.:   5002   1st Qu.:   2320   1st Qu.:   2312   1st Qu.:   4987  
-##  Median :   9481   Median :   4834   Median :   4009   Median :   9470  
-##  Mean   :  49501   Mean   :  23114   Mean   :  22640   Mean   :  49504  
-##  3rd Qu.:  17944   3rd Qu.:   8580   3rd Qu.:   8603   3rd Qu.:  17938  
+##  Min.   :   1881   Min.   :    769   Min.   :    847   Min.   :   1871  
+##  1st Qu.:   5121   1st Qu.:   2327   1st Qu.:   2318   1st Qu.:   5125  
+##  Median :   9659   Median :   4864   Median :   4096   Median :   9662  
+##  Mean   :  50063   Mean   :  23377   Mean   :  22897   Mean   :  50067  
+##  3rd Qu.:  18316   3rd Qu.:   8743   3rd Qu.:   8632   3rd Qu.:  18309  
 ##  Max.   :2202772   Max.   :1028568   Max.   :1007460   Max.   :2202937</code></pre>
 </div>
 <div id="section-8" class="section level2">
@@ -741,6 +720,9 @@ summary(county.2016)</code></pre>
 ##  Max.   :2860432  
 ## </code></pre>
 </div>
+</div>
+<div id="section-13" class="section level1">
+<h1></h1>
 </div>
 
 
