@@ -36,13 +36,34 @@ CountID.Name <- X2016_results %>%
 CountID.Name <- unique(CountID.Name)
 ```
 
-# Merge Precinct data into County
+
+## 2016 house dist vs. PCTNAME
+```{r}
+getCPCTCode <- function(CountyCode, PCTCode){
+  CountyCode <- as.numeric(CountyCode) * 10000
+  PCTCode <- as.numeric(PCTCode) %% 10000
+  
+  return(CountyCode+PCTCode)
+}
+
+pctDist <- X2016_results %>%
+  select(one_of(c( "PCTNAME", "COUNTYCODE", "PCTCODE", "CONGDIST"))) %>%
+  mutate(CPCTCode=getCPCTCode(COUNTYCODE, PCTCODE))
+
+colnames(pctDist) <- c("pctDist_PCTNAME","pctDist_COUNTYCODE","pctDist_PCTCODE","pctDist_CONGDIST","CPCTCode")
+```
+
+
+# Merge Precinct data into House Distinct
 
 ## 1992
 ```{r}
 colnames(X1992_results)[which(colnames(X1992_results) == '7am')] = 'reg'
+colnames(X1992_results)[which(colnames(X1992_results) == 'FIPS_VTD')] = 'CPCTCode'
+X1992_results$CPCTCode <- as.numeric(X1992_results$CPCTCode)
 county.1992 <- X1992_results %>%
-  group_by(FIPS) %>%
+  left_join(pctDist, by='CPCTCode' ) %>%
+  group_by(pctDist_CONGDIST) %>%
   summarise(reg = sum(reg), 
             turnout = sum(Ballots),
             PresIR = sum(PresIR),
@@ -52,7 +73,7 @@ county.1992 <- X1992_results %>%
             CongDFL = sum(CongDFL),
             CongOther = sum(CongOther)
             )
-colnames(county.1992)[1] <- 'FIPS'
+colnames(county.1992)[1] <- 'HouseDistID'
 
 summary(county.1992)
 
@@ -63,9 +84,12 @@ summary(county.1992)
 
 ```{r}
 colnames(X1994_results)[which(colnames(X1994_results) == '7am')] = 'reg'
+colnames(X1994_results)[which(colnames(X1994_results) == 'FIPS_VTD')] = 'CPCTCode'
+X1994_results$CPCTCode <- as.numeric(X1994_results$CPCTCode)
 
 county.1994 <- X1994_results %>%
-  group_by(FIPS) %>%
+  left_join(pctDist, by='CPCTCode' ) %>%
+  group_by(pctDist_CONGDIST) %>%
   summarise(reg = sum(reg),
             turnout = sum(Ballots),
             USSenIR = sum(USSenIR),
@@ -78,7 +102,7 @@ county.1994 <- X1994_results %>%
             GovDFL = sum(GovDFL),
             GovOther = sum(GovOther)   
             )
-colnames(county.1994)[1] <- 'FIPS'
+colnames(county.1994)[1] <- 'HouseDistID'
 
 summary(county.1994)
 
@@ -89,9 +113,11 @@ summary(county.1994)
 
 ```{r}
 colnames(X1996_results)[which(colnames(X1996_results) == '7am')] = 'reg'
-
+colnames(X1996_results)[which(colnames(X1996_results) == 'FIPS_VTD')] = 'CPCTCode'
+X1996_results$CPCTCode <- as.numeric(X1996_results$CPCTCode)
 county.1996 <- X1996_results %>%
-  group_by(FIPS) %>%
+  left_join(pctDist, by='CPCTCode' ) %>%
+  group_by(pctDist_CONGDIST) %>%
   summarise(reg = sum(reg),
             turnout = sum(Ballots),
             PresIR = sum(PresIR),
@@ -104,7 +130,7 @@ county.1996 <- X1996_results %>%
             CongDFL = sum(CongDFL),
             CongOther = sum(CongOther) 
             )
-colnames(county.1996)[1] <- 'FIPS'
+colnames(county.1996)[1] <- 'HouseDistID'
 
 summary(county.1996)
 ```
@@ -114,9 +140,12 @@ summary(county.1996)
 
 ```{r}
 colnames(X1998_results)[which(colnames(X1998_results) == '7am')] = 'reg'
+colnames(X1998_results)[which(colnames(X1998_results) == 'FIPS_VTD')] = 'CPCTCode'
+X1998_results$CPCTCode <- as.numeric(X1998_results$CPCTCode)
 
 county.1998 <- X1998_results %>%
-  group_by(FIPS) %>%
+  left_join(pctDist, by='CPCTCode' ) %>%
+  group_by(pctDist_CONGDIST) %>%
   summarise(reg = sum(reg),
             turnout = sum(Ballots),
             CongIR = sum(CongIR),
@@ -126,7 +155,7 @@ county.1998 <- X1998_results %>%
             GovDFL = sum(GovDFL),
             GovOther = sum(GovOther)   
             )
-colnames(county.1998)[1] <- 'FIPS'
+colnames(county.1998)[1] <- 'HouseDistID'
 
 summary(county.1998)
 ```
@@ -134,8 +163,12 @@ summary(county.1998)
 ## 2000
 ```{r}
 colnames(X2000_results)[which(colnames(X2000_results) == '7am')] = 'reg'
+
+
 county.2000 <- X2000_results %>%
-  group_by(CC) %>%
+  mutate(CPCTCode=getCPCTCode(CC, PRCT)) %>%
+  left_join(pctDist, by='CPCTCode' ) %>%
+  group_by(pctDist_CONGDIST) %>%  
   summarise(reg = sum(reg),
             turnout = sum(Sign),
             PresIR = sum(R_PREZ),
@@ -148,7 +181,7 @@ county.2000 <- X2000_results %>%
             USSenDFL = sum(DFL_USSEN),
             USSenOther = sum(OTHER_USSEN)
             )
-colnames(X2000_results)[1] <- 'CC'
+colnames(county.2000)[1] <- 'HouseDistID'
 
 summary(county.2000)
 ```
@@ -159,7 +192,9 @@ summary(county.2000)
 colnames(X2002_results)[which(colnames(X2002_results) == '7am')] = 'reg'
 
 county.2002 <- X2002_results %>%
-  group_by(CC) %>%
+  mutate(CPCTCode=getCPCTCode(CC, PRCT)) %>%
+  left_join(pctDist, by='CPCTCode' ) %>%
+  group_by(pctDist_CONGDIST) %>%  
   summarise(reg = sum(reg, na.rm = TRUE),
             turnout = sum(Ballots),
             CongIR = sum(as.numeric(CongR), na.rm = TRUE),
@@ -186,7 +221,7 @@ county.2002 <- X2002_results %>%
               sum(as.numeric(USSenCP), na.rm = TRUE) +
               sum(as.numeric(USSenWI), na.rm = TRUE)
             )
-colnames(county.2002)[1] <- 'CC'
+colnames(county.2002)[1] <- 'HouseDistID'
 summary(county.2002)
 
 ```
@@ -197,7 +232,9 @@ summary(county.2002)
 colnames(X2004_results)[which(colnames(X2004_results) == '7AM')] = 'reg'
 
 county.2004 <- X2004_results %>%
-  group_by(CC) %>%
+  mutate(CPCTCode=getCPCTCode(CC, PRCT)) %>%
+  left_join(pctDist, by='CPCTCode' ) %>%
+  group_by(pctDist_CONGDIST) %>%  
   summarise(reg = sum(reg),
             turnout = sum(TotVoters),
             PresIR = sum(USPresR),
@@ -207,7 +244,7 @@ county.2004 <- X2004_results %>%
             CongDFL = sum(USCongDFL),
             CongOther = sum(USCongI) + sum(USCongWI) + sum(USCongGr)
             )
-colnames(county.2004)[1] <- 'CC'
+colnames(county.2004)[1] <- 'HouseDistID'
 
 summary(county.2004)
 ```
@@ -219,7 +256,9 @@ colnames(X2006_results)[which(colnames(X2006_results) == 'Registered\nat 7AM')] 
 X2006_results <- X2006_results[-which(X2006_results[,1] == 'Precinct\nName' ),]
 
 county.2006 <- X2006_results %>%
-  group_by(County_ID) %>%
+  mutate(CPCTCode=getCPCTCode(County_ID, PRCT)) %>%
+  left_join(pctDist, by='CPCTCode' ) %>%
+  group_by(pctDist_CONGDIST) %>%  
   summarise(reg = sum(as.numeric(reg), na.rm = TRUE),
             turnout = sum(as.numeric(TotVoters), na.rm = TRUE),
             CongIR = sum(as.numeric(CongR), na.rm = TRUE),
@@ -232,7 +271,7 @@ county.2006 <- X2006_results %>%
             GovDFL = sum(as.numeric(GovDFL), na.rm = TRUE),
             GovAll = sum(as.numeric(GovTOT), na.rm = TRUE)
             )
-colnames(county.2006)[1] <- 'CC'
+colnames(county.2006)[1] <- 'HouseDistID'
 
 summary(county.2006)
 
@@ -245,7 +284,9 @@ summary(county.2006)
 colnames(X2008_results)[which(colnames(X2008_results) == '7AM')] = 'reg'
 
 county.2008 <- X2008_results %>%
-  group_by(CountyID) %>%
+  mutate(CPCTCode=getCPCTCode(CountyID, PRCT)) %>%
+  left_join(pctDist, by='CPCTCode' ) %>%
+  group_by(pctDist_CONGDIST) %>%  
   summarise(reg = sum(reg),
             turnout = sum(TotVoters),
             PresIR = sum(USPRESR),
@@ -258,7 +299,7 @@ county.2008 <- X2008_results %>%
             CongDFL = sum(CONGDFL),
             CongALL = sum(CONGTOT)
             )
-colnames(county.2008)[1] <- 'CC'
+colnames(county.2008)[1] <- 'HouseDistID'
 
 summary(county.2008)
 
@@ -271,7 +312,9 @@ summary(county.2008)
 colnames(X2010_results)[which(colnames(X2010_results) == '7AM')] = 'reg'
 
 county.2010 <- X2010_results %>%
-  group_by(CountyID) %>%
+  mutate(CPCTCode=getCPCTCode(CountyID, `Precinct Code`)) %>%
+  left_join(pctDist, by='CPCTCode' ) %>%
+  group_by(pctDist_CONGDIST) %>%  
   summarise(reg = sum(reg),
             turnout = sum(TotVoters),
             CongIR = sum(CONGR),
@@ -281,7 +324,7 @@ county.2010 <- X2010_results %>%
             GovDFL = sum(GOVDFL),
             GovAll = sum(GOVTOT)   
             )
-colnames(county.2010)[1] <- 'CC'
+colnames(county.2010)[1] <- 'HouseDistID'
 
 summary(county.2010)
 
@@ -293,7 +336,9 @@ summary(county.2010)
 colnames(X2012_results)[which(colnames(X2012_results) == '7AM')] = 'reg'
 
 county.2012 <- X2012_results %>%
-  group_by(COUNTYCODE) %>%
+  mutate(CPCTCode=getCPCTCode(COUNTYCODE, PCTCODE)) %>%
+  left_join(pctDist, by='CPCTCode' ) %>%
+  group_by(pctDist_CONGDIST) %>%  
   summarise(reg = sum(reg),
             turnout = sum(TOTVOTING),
             PresIR = sum(USPRSR),
@@ -306,7 +351,7 @@ county.2012 <- X2012_results %>%
             CongDFL = sum(USREPDFL),
             CongALL = sum(USREPTOTAL)
             )
-colnames(county.2012)[1] <- 'CC'
+colnames(county.2012)[1] <- 'HouseDistID'
 
 summary(county.2012)
 
@@ -318,7 +363,9 @@ summary(county.2012)
 colnames(X2014_results)[which(colnames(X2014_results) == 'REG7AM')] = 'reg'
 
 county.2014 <- X2014_results %>%
-  group_by(COUNTYCODE) %>%
+  mutate(CPCTCode=getCPCTCode(COUNTYCODE, PCTCODE)) %>%
+  left_join(pctDist, by='CPCTCode' ) %>%
+  group_by(pctDist_CONGDIST) %>%  
   summarise(reg = sum(reg),
             turnout = sum(TOTVOTING),
             CongIR = sum(USREPR),
@@ -331,7 +378,7 @@ county.2014 <- X2014_results %>%
             GovDFL = sum(MNGOVDFL),
             GovALL = sum(MNGOVTOTAL)   
             )
-colnames(county.2014)[1] <- 'CC'
+colnames(county.2014)[1] <- 'HouseDistID'
 
 summary(county.2014)
 
@@ -344,7 +391,9 @@ summary(county.2014)
 colnames(X2016_results)[which(colnames(X2016_results) == 'REG7AM')] = 'reg'
 
 county.2016 <- X2016_results %>%
-  group_by(COUNTYCODE) %>%
+  mutate(CPCTCode=getCPCTCode(COUNTYCODE, PCTCODE)) %>%
+  left_join(pctDist, by='CPCTCode' ) %>%
+  group_by(pctDist_CONGDIST) %>%  
   summarise(reg = sum(reg),
             turnout = sum(TOTVOTING),
             PresIR = sum(USPRSR),
@@ -354,12 +403,157 @@ county.2016 <- X2016_results %>%
             CongDFL = sum(USREPDFL),
             CongALL = sum(USREPTOTAL)
             )
-colnames(county.2016)[1] <- 'CC'
+colnames(county.2016)[1] <- 'HouseDistID'
 
 summary(county.2016)
 
 ```
 
 
+```{r}
+reg <- county.1992 %>% 
+  mutate(reg_1992 = reg) %>% 
+  select(one_of('HouseDistID', 'reg_1992')) %>% 
+  full_join(
+    county.1994 %>% 
+      mutate(reg_1994 = reg) %>% 
+      select(one_of('HouseDistID', 'reg_1994')), 
+    by='HouseDistID') %>% 
+  full_join(
+    county.1996 %>% 
+      mutate(reg_1996 = reg) %>% 
+      select(one_of('HouseDistID', 'reg_1996')), 
+    by='HouseDistID') %>%
+  full_join(
+    county.1998 %>% 
+      mutate(reg_1998 = reg) %>% 
+      select(one_of('HouseDistID', 'reg_1998')), 
+    by='HouseDistID') %>%
+  full_join(
+    county.2000 %>% 
+      mutate(reg_2000 = reg) %>% 
+      select(one_of('HouseDistID', 'reg_2000')), 
+    by='HouseDistID') %>%
+  full_join(
+    county.2002 %>% 
+      mutate(reg_2002 = reg) %>% 
+      select(one_of('HouseDistID', 'reg_2002')), 
+    by='HouseDistID') %>%
+  full_join(
+    county.2004 %>% 
+      mutate(reg_2004 = reg) %>% 
+      select(one_of('HouseDistID', 'reg_2004')), 
+    by='HouseDistID') %>%
+    full_join(
+    county.2006 %>% 
+      mutate(reg_2006 = reg) %>% 
+      select(one_of('HouseDistID', 'reg_2006')), 
+    by='HouseDistID') %>%
+  full_join(
+    county.2008 %>% 
+      mutate(reg_2008 = reg) %>% 
+      select(one_of('HouseDistID', 'reg_2008')), 
+    by='HouseDistID') %>%
+  full_join(
+    county.2010 %>% 
+      mutate(reg_2010 = reg) %>% 
+      select(one_of('HouseDistID', 'reg_2010')), 
+    by='HouseDistID') %>%
+  full_join(
+    county.2012 %>% 
+      mutate(reg_2012 = reg) %>% 
+      select(one_of('HouseDistID', 'reg_2012')), 
+    by='HouseDistID') %>%
+  full_join(
+    county.2014 %>% 
+      mutate(reg_2014 = reg) %>% 
+      select(one_of('HouseDistID', 'reg_2014')), 
+    by='HouseDistID') %>%
+  full_join(
+    county.2016 %>% 
+      mutate(reg_2016 = reg) %>% 
+      select(one_of('HouseDistID', 'reg_2016')), 
+    by='HouseDistID')
+  
+```
 
-# 
+
+```{r}
+turnout <- county.1992 %>% 
+  mutate(turnout_1992 = turnout) %>% 
+  select(one_of('HouseDistID', 'turnout_1992')) %>% 
+  full_join(
+    county.1994 %>% 
+      mutate(turnout_1994 = turnout) %>% 
+      select(one_of('HouseDistID', 'turnout_1994')), 
+    by='HouseDistID') %>% 
+  full_join(
+    county.1996 %>% 
+      mutate(turnout_1996 = turnout) %>% 
+      select(one_of('HouseDistID', 'turnout_1996')), 
+    by='HouseDistID') %>%
+  full_join(
+    county.1998 %>% 
+      mutate(turnout_1998 = turnout) %>% 
+      select(one_of('HouseDistID', 'turnout_1998')), 
+    by='HouseDistID') %>%
+  full_join(
+    county.2000 %>% 
+      mutate(turnout_2000 = turnout) %>% 
+      select(one_of('HouseDistID', 'turnout_2000')), 
+    by='HouseDistID') %>%
+  full_join(
+    county.2002 %>% 
+      mutate(turnout_2002 = turnout) %>% 
+      select(one_of('HouseDistID', 'turnout_2002')), 
+    by='HouseDistID') %>%
+  full_join(
+    county.2004 %>% 
+      mutate(turnout_2004 = turnout) %>% 
+      select(one_of('HouseDistID', 'turnout_2004')), 
+    by='HouseDistID') %>%
+  full_join(
+    county.2006 %>% 
+      mutate(turnout_2006 = turnout) %>% 
+      select(one_of('HouseDistID', 'turnout_2006')), 
+    by='HouseDistID') %>%
+  full_join(
+    county.2008 %>% 
+      mutate(turnout_2008 = turnout) %>% 
+      select(one_of('HouseDistID', 'turnout_2008')), 
+    by='HouseDistID') %>%
+  full_join(
+    county.2010 %>% 
+      mutate(turnout_2010 = turnout) %>% 
+      select(one_of('HouseDistID', 'turnout_2010')), 
+    by='HouseDistID') %>%
+  full_join(
+    county.2012 %>% 
+      mutate(turnout_2012 = turnout) %>% 
+      select(one_of('HouseDistID', 'turnout_2012')), 
+    by='HouseDistID') %>%
+  full_join(
+    county.2014 %>% 
+      mutate(turnout_2014 = turnout) %>% 
+      select(one_of('HouseDistID', 'turnout_2014')), 
+    by='HouseDistID') %>%
+  full_join(
+    county.2016 %>% 
+      mutate(turnout_2016 = turnout) %>% 
+      select(one_of('HouseDistID', 'turnout_2016')), 
+    by='HouseDistID') %>%
+  arrange(HouseDistID)
+
+
+```
+
+```{r}
+
+turnout$HouseDistID[is.na(turnout$HouseDistID)] = 0
+
+temp <- turnout[which(turnout$HouseDistID != 0),][,-1]
+turnoutTotal <- colSums(temp, na.rm = TRUE)
+plot(turnoutTotal, type='l')
+
+
+```
