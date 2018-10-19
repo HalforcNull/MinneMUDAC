@@ -253,7 +253,7 @@ summary(county.2004)
 
 ```{r}
 colnames(X2006_results)[which(colnames(X2006_results) == 'Registered\nat 7AM')] = 'reg'
-X2006_results <- X2006_results[-which(X2006_results[,1] == 'Precinct\nName' ),]
+#X2006_results <- X2006_results[-which(X2006_results[,1] == 'Precinct\nName' ),]
 
 county.2006 <- X2006_results %>%
   mutate(CPCTCode=getCPCTCode(County_ID, PRCT)) %>%
@@ -473,7 +473,8 @@ reg <- county.1992 %>%
     county.2016 %>% 
       mutate(reg_2016 = reg) %>% 
       select(one_of('HouseDistID', 'reg_2016')), 
-    by='HouseDistID')
+    by='HouseDistID') %>%
+  arrange(HouseDistID)
   
 ```
 
