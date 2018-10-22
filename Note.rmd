@@ -549,12 +549,14 @@ turnout <- county.1992 %>%
 ```
 
 ```{r}
-
 turnout$HouseDistID[is.na(turnout$HouseDistID)] = 0
 
 temp <- turnout[which(turnout$HouseDistID != 0),][,-1]
 turnoutTotal <- colSums(temp, na.rm = TRUE)
 plot(turnoutTotal, type='l')
 
-
 ```
+
+
+
+
