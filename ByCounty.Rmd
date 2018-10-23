@@ -1,0 +1,892 @@
+---
+title: "Group By County"
+author: "Runan Yao"
+date: "October 22, 2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(readxl)
+library(dplyr)
+```
+# Read Data
+
+## General Election Data
+
+```{r}
+X1992_results <- read_excel("Data/General Election 1992-2016/1992_results.xls")
+X1994_results <- read_excel("Data/General Election 1992-2016/1994_results.xls")
+X1996_results <- read_excel("Data/General Election 1992-2016/1996_results.xls")
+X1998_results <- read_excel("Data/General Election 1992-2016/1998_results.xls")
+X2000_results <- read_excel("Data/General Election 1992-2016/2000_results.xls", guess_max = 4076)
+X2002_results <- read_excel("Data/General Election 1992-2016/2002_results.xls")
+X2004_results <- read_excel("Data/General Election 1992-2016/2004_results.xls")
+X2006_results <- read_excel("Data/General Election 1992-2016/2006_results.xls", guess_max = 4125)
+X2008_results <- read_excel("Data/General Election 1992-2016/2008_results.xls", guess_max = 4133)
+X2010_results <- read_excel("Data/General Election 1992-2016/2010_results.xls")
+X2012_results <- read_excel("Data/General Election 1992-2016/2012_results.xlsx",guess_max = 4103)
+X2014_results <- read_excel("Data/General Election 1992-2016/2014_results.xlsx",guess_max = 4106)
+X2016_results <- read_excel("Data/General Election 1992-2016/2016_results.xlsx",guess_max = 4121)
+```
+
+
+```{r}
+CCFIPS <- X1994_results %>% select(one_of(c('CC', 'FIPS')))
+
+```
+
+
+# Merge Precinct data into House Distinct
+
+## 1992
+```{r}
+colnames(X1992_results)[which(colnames(X1992_results) == '7am')] = 'reg'
+
+county.1992 <- X1992_results %>%
+  group_by(CC) %>%
+  summarise(reg = sum(reg), 
+            turnout = sum(Ballots),
+            PresIR = sum(PresIR),
+            PresDFL = sum(PresDFL),
+            PresALL = sum(PresOther),
+            CongIR = sum(CongIR),
+            CongDFL = sum(CongDFL),
+            CongOther = sum(CongOther)
+            )
+colnames(county.1992)[1] <- 'CC'
+county.1992$CC <- as.numeric(county.1992$CC)
+summary(county.1992)
+
+```
+
+## 1994
+
+
+```{r}
+colnames(X1994_results)[which(colnames(X1994_results) == '7am')] = 'reg'
+
+county.1994 <- X1994_results %>%
+  group_by(CC) %>%
+  summarise(reg = sum(reg),
+            turnout = sum(Ballots),
+            USSenIR = sum(USSenIR),
+            USSenDFL = sum(USSenDFL),
+            USSenOther = sum(USSenOther),
+            CongIR = sum(CongIR),
+            CongDFL = sum(CongDFL),
+            CongOther = sum(CongOther),            
+            GovIR = sum(GovIR),
+            GovDFL = sum(GovDFL),
+            GovOther = sum(GovOther)   
+            )
+colnames(county.1994)[1] <- 'CC'
+county.1994$CC <- as.numeric(county.1994$CC)
+summary(county.1994)
+
+```
+
+
+## 1996
+
+```{r}
+colnames(X1996_results)[which(colnames(X1996_results) == '7am')] = 'reg'
+
+county.1996 <- X1996_results %>%
+  full_join(CCFIPS, by='FIPS') %>%
+  group_by(CC) %>%
+  summarise(reg = sum(reg),
+            turnout = sum(Ballots),
+            PresIR = sum(PresIR),
+            PresDFL = sum(PresDFL),
+            PresOther = sum(PresOther),
+            USSenIR = sum(USSenIR),
+            USSenDFL = sum(USSenDFL),
+            USSenOther = sum(USSenOther),
+            CongIR = sum(CongIR),
+            CongDFL = sum(CongDFL),
+            CongOther = sum(CongOther) 
+            )
+colnames(county.1996)[1] <- 'CC'
+county.1996$CC <- as.numeric(county.1996$CC)
+summary(county.1996)
+```
+
+
+## 1998
+
+```{r}
+colnames(X1998_results)[which(colnames(X1998_results) == '7am')] = 'reg'
+
+county.1998 <- X1998_results %>%
+  full_join(CCFIPS, by='FIPS') %>%
+  group_by(CC) %>%
+  summarise(reg = sum(reg),
+            turnout = sum(Ballots),
+            CongIR = sum(CongIR),
+            CongDFL = sum(CongDFL),
+            CongOther = sum(CongOther),            
+            GovIR = sum(GovIR),
+            GovDFL = sum(GovDFL),
+            GovOther = sum(GovOther)   
+            )
+colnames(county.1998)[1] <- 'CC'
+county.1998$CC <- as.numeric(county.1998$CC)
+summary(county.1998)
+```
+
+## 2000
+```{r}
+colnames(X2000_results)[which(colnames(X2000_results) == '7am')] = 'reg'
+
+county.2000 <- X2000_results %>%
+  group_by(CC) %>%  
+  summarise(reg = sum(reg),
+            turnout = sum(Sign),
+            PresIR = sum(R_PREZ),
+            PresDFL = sum(DFL_PREZ),
+            PresOther = sum(ALL_OTHER_PREZ),
+            CongIR = sum(R_CONG),
+            CongDFL = sum(DFL_CONG),
+            CongOther = sum(OTHER_CONG),
+            USSenIR = sum(R_USSEN),
+            USSenDFL = sum(DFL_USSEN),
+            USSenOther = sum(OTHER_USSEN)
+            )
+colnames(county.2000)[1] <- 'CC'
+county.2000$CC <- as.numeric(county.2000$CC)
+summary(county.2000)
+```
+
+
+## 2002
+```{r}
+colnames(X2002_results)[which(colnames(X2002_results) == '7am')] = 'reg'
+
+county.2002 <- X2002_results %>%
+  group_by(CC) %>%  
+  summarise(reg = sum(reg, na.rm = TRUE),
+            turnout = sum(Ballots),
+            CongIR = sum(as.numeric(CongR), na.rm = TRUE),
+            CongDFL = sum(as.numeric(CongDFL), na.rm = TRUE),
+            CongOther = 
+              sum(as.numeric(CongGP), na.rm = TRUE) + 
+              sum(as.numeric(CongIP), na.rm = TRUE) + 
+              sum(as.numeric(CongNNT), na.rm = TRUE) + 
+              sum(as.numeric(CongWI), na.rm = TRUE),
+            GovIR = sum(as.numeric(GovR), na.rm = TRUE),
+            GovDFL = sum(as.numeric(GovDFL), na.rm = TRUE),
+            GovOther = 
+              sum(as.numeric(GovGP), na.rm = TRUE) +
+              sum(as.numeric(GovIP), na.rm = TRUE) +
+              sum(as.numeric(GovCP), na.rm = TRUE) +
+              sum(as.numeric(GovI), na.rm = TRUE) +
+              sum(as.numeric(GovSW), na.rm = TRUE) +
+              sum(as.numeric(GovWI), na.rm = TRUE),
+            USSenIR = sum(as.numeric(USSenR), na.rm = TRUE),
+            USSenDFL = sum(as.numeric(USSenDFL), na.rm = TRUE),
+            USSenOther = 
+              sum(as.numeric(USSenGP), na.rm = TRUE) +
+              sum(as.numeric(USSenIP), na.rm = TRUE) + 
+              sum(as.numeric(USSenCP), na.rm = TRUE) +
+              sum(as.numeric(USSenWI), na.rm = TRUE)
+            )
+colnames(county.2002)[1] <- 'CC'
+county.2002$CC <- as.numeric(county.2002$CC)
+summary(county.2002)
+
+```
+
+## 2004
+```{r}
+
+colnames(X2004_results)[which(colnames(X2004_results) == '7AM')] = 'reg'
+
+county.2004 <- X2004_results %>%
+  group_by(CC) %>%  
+  summarise(reg = sum(reg),
+            turnout = sum(TotVoters),
+            PresIR = sum(USPresR),
+            PresDFL = sum(USPresDFL),
+            PresOther = sum(USPresGP) + sum(USPresSE) + sum(USPresSW) + sum(USPresCF) + sum(USPresBL) + sum(USPresC) + sum(USPresL) + sum(USPresWI),
+            CongIR = sum(USCongR),
+            CongDFL = sum(USCongDFL),
+            CongOther = sum(USCongI) + sum(USCongWI) + sum(USCongGr)
+            )
+colnames(county.2004)[1] <- 'CC'
+county.2004$CC <- as.numeric(county.2004$CC)
+summary(county.2004)
+```
+
+## 2006
+
+```{r}
+colnames(X2006_results)[which(colnames(X2006_results) == 'Registered\nat 7AM')] = 'reg'
+#X2006_results <- X2006_results[-which(X2006_results[,1] == 'Precinct\nName' ),]
+
+county.2006 <- X2006_results %>%
+  group_by(County_ID) %>%  
+  summarise(reg = sum(as.numeric(reg), na.rm = TRUE),
+            turnout = sum(as.numeric(TotVoters), na.rm = TRUE),
+            CongIR = sum(as.numeric(CongR), na.rm = TRUE),
+            CongDFL = sum(as.numeric(CongDFL), na.rm = TRUE),
+            CongOther = sum(as.numeric(CongTOT), na.rm = TRUE) 
+                        - sum(as.numeric(CongR), na.rm = TRUE)
+                        - sum(as.numeric(CongDFL), na.rm = TRUE),
+            USSenIR = sum(as.numeric(USSenR), na.rm = TRUE),
+            USSenDFL = sum(as.numeric(USSenDFL), na.rm = TRUE),
+            USSenOther = sum(as.numeric(USSenTOT), na.rm = TRUE)
+                       - sum(as.numeric(USSenR), na.rm = TRUE)
+                       - sum(as.numeric(USSenDFL), na.rm = TRUE),
+            GovIR = sum(as.numeric(GovR), na.rm = TRUE),
+            GovDFL = sum(as.numeric(GovDFL), na.rm = TRUE),
+            GovOther = sum(as.numeric(GovTOT), na.rm = TRUE) 
+                       - sum(as.numeric(GovR), na.rm = TRUE)
+                       - sum(as.numeric(GovDFL), na.rm = TRUE)
+            )
+colnames(county.2006)[1] <- 'CC'
+county.2006$CC <- as.numeric(county.2006$CC)
+summary(county.2006)
+
+```
+
+
+## 2008
+
+```{r}
+colnames(X2008_results)[which(colnames(X2008_results) == '7AM')] = 'reg'
+
+county.2008 <- X2008_results %>%
+  group_by(CountyID) %>%  
+  summarise(reg = sum(reg),
+            turnout = sum(TotVoters),
+            PresIR = sum(USPRESR),
+            PresDFL = sum(USPRESDFL),
+            PresOther = sum(USPRESTOT)
+                      - sum(USPRESR)
+                      - sum(USPRESDFL),
+            USSenIR = sum(USSENR),
+            USSenDFL = sum(USSENDFL),
+            USSenOther =  sum(USSENTOT)
+                        - sum(USSENR)
+                        - sum(USSENDFL),
+            CongIR = sum(CONGR),
+            CongDFL = sum(CONGDFL),
+            CongOther = sum(CONGTOT)
+                      - sum(CONGR)
+                      - sum(CONGDFL)
+            )
+colnames(county.2008)[1] <- 'CC'
+county.2008$CC <- as.numeric(county.2008$CC)
+summary(county.2008)
+
+```
+
+## 2010
+
+```{r}
+
+colnames(X2010_results)[which(colnames(X2010_results) == '7AM')] = 'reg'
+
+county.2010 <- X2010_results %>%
+  group_by(CountyID) %>%  
+  summarise(reg = sum(reg),
+            turnout = sum(TotVoters),
+            CongIR = sum(CONGR),
+            CongDFL = sum(CONGDFL),
+            CongOther = sum(CONGTOT)
+                      - sum(CONGR)
+                      - sum(CONGDFL),            
+            GovIR = sum(GOVR),
+            GovDFL = sum(GOVDFL),
+            GovOther = sum(GOVTOT)
+                      -sum(GOVR)
+                      -sum(GOVDFL)
+            )
+colnames(county.2010)[1] <- 'CC'
+county.2010$CC <- as.numeric(county.2010$CC)
+summary(county.2010)
+
+```
+
+## 2012
+
+```{r}
+colnames(X2012_results)[which(colnames(X2012_results) == '7AM')] = 'reg'
+
+county.2012 <- X2012_results %>%
+  group_by(COUNTYCODE) %>%  
+  summarise(reg = sum(reg),
+            turnout = sum(TOTVOTING),
+            PresIR = sum(USPRSR),
+            PresDFL = sum(USPRSDFL),
+            PresOther = sum(USPRSTOTAL)
+                      - sum(USPRSR)
+                      - sum(USPRSDFL),
+            USSenIR = sum(USSENR),
+            USSenDFL = sum(USSENDFL),
+            USSenOther = sum(USSENTOTAL)
+                      -sum(USSENR)
+                      -sum(USSENDFL),
+            CongIR = sum(USREPR),
+            CongDFL = sum(USREPDFL),
+            CongOther = sum(USREPTOTAL)
+                        - sum(USREPR)
+                        - sum(USREPDFL)
+            )
+colnames(county.2012)[1] <- 'CC'
+county.2012$CC <- as.numeric(county.2012$CC)
+summary(county.2012)
+
+```
+
+
+# 2014
+```{r}
+colnames(X2014_results)[which(colnames(X2014_results) == 'REG7AM')] = 'reg'
+
+county.2014 <- X2014_results %>%
+  group_by(COUNTYCODE) %>%  
+  summarise(reg = sum(reg),
+            turnout = sum(TOTVOTING),
+            CongIR = sum(USREPR),
+            CongDFL = sum(USREPDFL),
+            CongOther = sum(USREPTOTAL) - sum(USREPR) - sum(USREPDFL),            
+            USSenIR = sum(USSENR),
+            USSenDFL = sum(USSENDFL),
+            USSenOther = sum(USSENTOTAL) - sum(USSENR) - sum(USSENDFL),
+            GovIR = sum(MNGOVR),
+            GovDFL = sum(MNGOVDFL),
+            GovOther = sum(MNGOVTOTAL) - sum(MNGOVR) - sum(MNGOVDFL)     
+            )
+colnames(county.2014)[1] <- 'CC'
+county.2014$CC <- as.numeric(county.2014$CC)
+summary(county.2014)
+
+```
+
+
+## 2016 
+
+```{r}
+colnames(X2016_results)[which(colnames(X2016_results) == 'REG7AM')] = 'reg'
+
+county.2016 <- X2016_results %>%
+  group_by(COUNTYCODE) %>%  
+  summarise(reg = sum(reg),
+            turnout = sum(TOTVOTING),
+            PresIR = sum(USPRSR),
+            PresDFL = sum(USPRSDFL),
+            PresOther = sum(USPRSTOTAL) - sum(USPRSR) - sum(USPRSDFL),
+            CongIR = sum(USREPR),
+            CongDFL = sum(USREPDFL),
+            CongOther = sum(USREPTOTAL) - sum(USREPR) - sum(USREPDFL)
+            )
+colnames(county.2016)[1] <- 'CC'
+county.2016$CC <- as.numeric(county.2016$CC)
+summary(county.2016)
+
+```
+
+
+```{r}
+reg <- county.1992 %>% 
+  mutate(reg_1992 = reg) %>% 
+  select(one_of('CC', 'reg_1992')) %>% 
+  full_join(
+    county.1994 %>% 
+      mutate(reg_1994 = reg) %>% 
+      select(one_of('CC', 'reg_1994')), 
+    by='CC') %>% 
+  full_join(
+    county.1996 %>% 
+      mutate(reg_1996 = reg) %>% 
+      select(one_of('CC', 'reg_1996')), 
+    by='CC') %>%
+  full_join(
+    county.1998 %>% 
+      mutate(reg_1998 = reg) %>% 
+      select(one_of('CC', 'reg_1998')), 
+    by='CC') %>%
+  full_join(
+    county.2000 %>% 
+      mutate(reg_2000 = reg) %>% 
+      select(one_of('CC', 'reg_2000')), 
+    by='CC') %>%
+  full_join(
+    county.2002 %>% 
+      mutate(reg_2002 = reg) %>% 
+      select(one_of('CC', 'reg_2002')), 
+    by='CC') %>%
+  full_join(
+    county.2004 %>% 
+      mutate(reg_2004 = reg) %>% 
+      select(one_of('CC', 'reg_2004')), 
+    by='CC') %>%
+    full_join(
+    county.2006 %>% 
+      mutate(reg_2006 = reg) %>% 
+      select(one_of('CC', 'reg_2006')), 
+    by='CC') %>%
+  full_join(
+    county.2008 %>% 
+      mutate(reg_2008 = reg) %>% 
+      select(one_of('CC', 'reg_2008')), 
+    by='CC') %>%
+  full_join(
+    county.2010 %>% 
+      mutate(reg_2010 = reg) %>% 
+      select(one_of('CC', 'reg_2010')), 
+    by='CC') %>%
+  full_join(
+    county.2012 %>% 
+      mutate(reg_2012 = reg) %>% 
+      select(one_of('CC', 'reg_2012')), 
+    by='CC') %>%
+  full_join(
+    county.2014 %>% 
+      mutate(reg_2014 = reg) %>% 
+      select(one_of('CC', 'reg_2014')), 
+    by='CC') %>%
+  full_join(
+    county.2016 %>% 
+      mutate(reg_2016 = reg) %>% 
+      select(one_of('CC', 'reg_2016')), 
+    by='CC') %>%
+  arrange(CC)
+  
+write.csv(reg, file="7am Reg Data By County.csv")
+```
+
+
+```{r}
+turnout <- county.1992 %>% 
+  mutate(turnout_1992 = turnout) %>% 
+  select(one_of('CC', 'turnout_1992')) %>% 
+  full_join(
+    county.1994 %>% 
+      mutate(turnout_1994 = turnout) %>% 
+      select(one_of('CC', 'turnout_1994')), 
+    by='CC') %>% 
+  full_join(
+    county.1996 %>% 
+      mutate(turnout_1996 = turnout) %>% 
+      select(one_of('CC', 'turnout_1996')), 
+    by='CC') %>%
+  full_join(
+    county.1998 %>% 
+      mutate(turnout_1998 = turnout) %>% 
+      select(one_of('CC', 'turnout_1998')), 
+    by='CC') %>%
+  full_join(
+    county.2000 %>% 
+      mutate(turnout_2000 = turnout) %>% 
+      select(one_of('CC', 'turnout_2000')), 
+    by='CC') %>%
+  full_join(
+    county.2002 %>% 
+      mutate(turnout_2002 = turnout) %>% 
+      select(one_of('CC', 'turnout_2002')), 
+    by='CC') %>%
+  full_join(
+    county.2004 %>% 
+      mutate(turnout_2004 = turnout) %>% 
+      select(one_of('CC', 'turnout_2004')), 
+    by='CC') %>%
+  full_join(
+    county.2006 %>% 
+      mutate(turnout_2006 = turnout) %>% 
+      select(one_of('CC', 'turnout_2006')), 
+    by='CC') %>%
+  full_join(
+    county.2008 %>% 
+      mutate(turnout_2008 = turnout) %>% 
+      select(one_of('CC', 'turnout_2008')), 
+    by='CC') %>%
+  full_join(
+    county.2010 %>% 
+      mutate(turnout_2010 = turnout) %>% 
+      select(one_of('CC', 'turnout_2010')), 
+    by='CC') %>%
+  full_join(
+    county.2012 %>% 
+      mutate(turnout_2012 = turnout) %>% 
+      select(one_of('CC', 'turnout_2012')), 
+    by='CC') %>%
+  full_join(
+    county.2014 %>% 
+      mutate(turnout_2014 = turnout) %>% 
+      select(one_of('CC', 'turnout_2014')), 
+    by='CC') %>%
+  full_join(
+    county.2016 %>% 
+      mutate(turnout_2016 = turnout) %>% 
+      select(one_of('CC', 'turnout_2016')), 
+    by='CC') %>%
+  arrange(CC)
+
+write.csv(turnout, file="Turnout Data By County.csv")
+```
+
+
+```{r}
+CongIR <- county.1992 %>% 
+  mutate(CongIR_1992 = CongIR) %>% 
+  select(one_of('CC', 'CongIR_1992')) %>% 
+  full_join(
+    county.1994 %>% 
+      mutate(CongIR_1994 = CongIR) %>% 
+      select(one_of('CC', 'CongIR_1994')), 
+    by='CC') %>% 
+  full_join(
+    county.1996 %>% 
+      mutate(CongIR_1996 = CongIR) %>% 
+      select(one_of('CC', 'CongIR_1996')), 
+    by='CC') %>%
+  full_join(
+    county.1998 %>% 
+      mutate(CongIR_1998 = CongIR) %>% 
+      select(one_of('CC', 'CongIR_1998')), 
+    by='CC') %>%
+  full_join(
+    county.2000 %>% 
+      mutate(CongIR_2000 = CongIR) %>% 
+      select(one_of('CC', 'CongIR_2000')), 
+    by='CC') %>%
+  full_join(
+    county.2002 %>% 
+      mutate(CongIR_2002 = CongIR) %>% 
+      select(one_of('CC', 'CongIR_2002')), 
+    by='CC') %>%
+  full_join(
+    county.2004 %>% 
+      mutate(CongIR_2004 = CongIR) %>% 
+      select(one_of('CC', 'CongIR_2004')), 
+    by='CC') %>%
+    full_join(
+    county.2006 %>% 
+      mutate(CongIR_2006 = CongIR) %>% 
+      select(one_of('CC', 'CongIR_2006')), 
+    by='CC') %>%
+  full_join(
+    county.2008 %>% 
+      mutate(CongIR_2008 = CongIR) %>% 
+      select(one_of('CC', 'CongIR_2008')), 
+    by='CC') %>%
+  full_join(
+    county.2010 %>% 
+      mutate(CongIR_2010 = CongIR) %>% 
+      select(one_of('CC', 'CongIR_2010')), 
+    by='CC') %>%
+  full_join(
+    county.2012 %>% 
+      mutate(CongIR_2012 = CongIR) %>% 
+      select(one_of('CC', 'CongIR_2012')), 
+    by='CC') %>%
+  full_join(
+    county.2014 %>% 
+      mutate(CongIR_2014 = CongIR) %>% 
+      select(one_of('CC', 'CongIR_2014')), 
+    by='CC') %>%
+  full_join(
+    county.2016 %>% 
+      mutate(CongIR_2016 = CongIR) %>% 
+      select(one_of('CC', 'CongIR_2016')), 
+    by='CC') %>%
+  arrange(CC)
+
+
+write.csv(CongIR, file="CongIR By County.csv")
+```
+
+
+
+```{r}
+CongDFL <- county.1992 %>% 
+  mutate(CongDFL_1992 = CongDFL) %>% 
+  select(one_of('CC', 'CongDFL_1992')) %>% 
+  full_join(
+    county.1994 %>% 
+      mutate(CongDFL_1994 = CongDFL) %>% 
+      select(one_of('CC', 'CongDFL_1994')), 
+    by='CC') %>% 
+  full_join(
+    county.1996 %>% 
+      mutate(CongDFL_1996 = CongDFL) %>% 
+      select(one_of('CC', 'CongDFL_1996')), 
+    by='CC') %>%
+  full_join(
+    county.1998 %>% 
+      mutate(CongDFL_1998 = CongDFL) %>% 
+      select(one_of('CC', 'CongDFL_1998')), 
+    by='CC') %>%
+  full_join(
+    county.2000 %>% 
+      mutate(CongDFL_2000 = CongDFL) %>% 
+      select(one_of('CC', 'CongDFL_2000')), 
+    by='CC') %>%
+  full_join(
+    county.2002 %>% 
+      mutate(CongDFL_2002 = CongDFL) %>% 
+      select(one_of('CC', 'CongDFL_2002')), 
+    by='CC') %>%
+  full_join(
+    county.2004 %>% 
+      mutate(CongDFL_2004 = CongDFL) %>% 
+      select(one_of('CC', 'CongDFL_2004')), 
+    by='CC') %>%
+    full_join(
+    county.2006 %>% 
+      mutate(CongDFL_2006 = CongDFL) %>% 
+      select(one_of('CC', 'CongDFL_2006')), 
+    by='CC') %>%
+  full_join(
+    county.2008 %>% 
+      mutate(CongDFL_2008 = CongDFL) %>% 
+      select(one_of('CC', 'CongDFL_2008')), 
+    by='CC') %>%
+  full_join(
+    county.2010 %>% 
+      mutate(CongDFL_2010 = CongDFL) %>% 
+      select(one_of('CC', 'CongDFL_2010')), 
+    by='CC') %>%
+  full_join(
+    county.2012 %>% 
+      mutate(CongDFL_2012 = CongDFL) %>% 
+      select(one_of('CC', 'CongDFL_2012')), 
+    by='CC') %>%
+  full_join(
+    county.2014 %>% 
+      mutate(CongDFL_2014 = CongDFL) %>% 
+      select(one_of('CC', 'CongDFL_2014')), 
+    by='CC') %>%
+  full_join(
+    county.2016 %>% 
+      mutate(CongDFL_2016 = CongDFL) %>% 
+      select(one_of('CC', 'CongDFL_2016')), 
+    by='CC') %>%
+  arrange(CC)
+
+
+write.csv(CongDFL, file="CongDFL By County.csv")
+```
+
+
+
+
+
+```{r}
+CongOther <- county.1992 %>% 
+  mutate(CongOther_1992 = CongOther) %>% 
+  select(one_of('CC', 'CongOther_1992')) %>% 
+  full_join(
+    county.1994 %>% 
+      mutate(CongOther_1994 = CongOther) %>% 
+      select(one_of('CC', 'CongOther_1994')), 
+    by='CC') %>% 
+  full_join(
+    county.1996 %>% 
+      mutate(CongOther_1996 = CongOther) %>% 
+      select(one_of('CC', 'CongOther_1996')), 
+    by='CC') %>%
+  full_join(
+    county.1998 %>% 
+      mutate(CongOther_1998 = CongOther) %>% 
+      select(one_of('CC', 'CongOther_1998')), 
+    by='CC') %>%
+  full_join(
+    county.2000 %>% 
+      mutate(CongOther_2000 = CongOther) %>% 
+      select(one_of('CC', 'CongOther_2000')), 
+    by='CC') %>%
+  full_join(
+    county.2002 %>% 
+      mutate(CongOther_2002 = CongOther) %>% 
+      select(one_of('CC', 'CongOther_2002')), 
+    by='CC') %>%
+  full_join(
+    county.2004 %>% 
+      mutate(CongOther_2004 = CongOther) %>% 
+      select(one_of('CC', 'CongOther_2004')), 
+    by='CC') %>%
+    full_join(
+    county.2006 %>% 
+      mutate(CongOther_2006 = CongOther) %>% 
+      select(one_of('CC', 'CongOther_2006')), 
+    by='CC') %>%
+  full_join(
+    county.2008 %>% 
+      mutate(CongOther_2008 = CongOther) %>% 
+      select(one_of('CC', 'CongOther_2008')), 
+    by='CC') %>%
+  full_join(
+    county.2010 %>% 
+      mutate(CongOther_2010 = CongOther) %>% 
+      select(one_of('CC', 'CongOther_2010')), 
+    by='CC') %>%
+  full_join(
+    county.2012 %>% 
+      mutate(CongOther_2012 = CongOther) %>% 
+      select(one_of('CC', 'CongOther_2012')), 
+    by='CC') %>%
+  full_join(
+    county.2014 %>% 
+      mutate(CongOther_2014 = CongOther) %>% 
+      select(one_of('CC', 'CongOther_2014')), 
+    by='CC') %>%
+  full_join(
+    county.2016 %>% 
+      mutate(CongOther_2016 = CongOther) %>% 
+      select(one_of('CC', 'CongOther_2016')), 
+    by='CC') %>%
+  arrange(CC)
+
+
+write.csv(CongOther, file="CongOther By County.csv")
+```
+
+
+
+
+```{r}
+USSenOther <- 
+    county.1994 %>% 
+      mutate(USSenOther_1994 = USSenOther) %>% 
+      select(one_of('CC', 'USSenOther_1994')) %>% 
+  full_join(
+    county.1996 %>% 
+      mutate(USSenOther_1996 = USSenOther) %>% 
+      select(one_of('CC', 'USSenOther_1996')), 
+    by='CC') %>%
+  full_join(
+    county.2000 %>% 
+      mutate(USSenOther_2000 = USSenOther) %>% 
+      select(one_of('CC', 'USSenOther_2000')), 
+    by='CC') %>%
+  full_join(
+    county.2002 %>% 
+      mutate(USSenOther_2002 = USSenOther) %>% 
+      select(one_of('CC', 'USSenOther_2002')), 
+    by='CC') %>%
+  full_join(
+    county.2006 %>% 
+      mutate(USSenOther_2006 = USSenOther) %>% 
+      select(one_of('CC', 'USSenOther_2006')), 
+    by='CC') %>%
+  full_join(
+    county.2008 %>% 
+      mutate(USSenOther_2008 = USSenOther) %>% 
+      select(one_of('CC', 'USSenOther_2008')), 
+    by='CC') %>%
+  full_join(
+    county.2012 %>% 
+      mutate(USSenOther_2012 = USSenOther) %>% 
+      select(one_of('CC', 'USSenOther_2012')), 
+    by='CC') %>%
+  full_join(
+    county.2014 %>% 
+      mutate(USSenOther_2014 = USSenOther) %>% 
+      select(one_of('CC', 'USSenOther_2014')), 
+    by='CC') %>%
+  arrange(CC)
+
+
+write.csv(USSenOther, file="USSenOther By County.csv")
+```
+
+```{r}
+USSenIR <- 
+    county.1994 %>% 
+      mutate(USSenIR_1994 = USSenIR) %>% 
+      select(one_of('CC', 'USSenIR_1994')) %>% 
+  full_join(
+    county.1996 %>% 
+      mutate(USSenIR_1996 = USSenIR) %>% 
+      select(one_of('CC', 'USSenIR_1996')), 
+    by='CC') %>%
+  full_join(
+    county.2000 %>% 
+      mutate(USSenIR_2000 = USSenIR) %>% 
+      select(one_of('CC', 'USSenIR_2000')), 
+    by='CC') %>%
+  full_join(
+    county.2002 %>% 
+      mutate(USSenIR_2002 = USSenIR) %>% 
+      select(one_of('CC', 'USSenIR_2002')), 
+    by='CC') %>%
+  full_join(
+    county.2006 %>% 
+      mutate(USSenIR_2006 = USSenIR) %>% 
+      select(one_of('CC', 'USSenIR_2006')), 
+    by='CC') %>%
+  full_join(
+    county.2008 %>% 
+      mutate(USSenIR_2008 = USSenIR) %>% 
+      select(one_of('CC', 'USSenIR_2008')), 
+    by='CC') %>%
+  full_join(
+    county.2012 %>% 
+      mutate(USSenIR_2012 = USSenIR) %>% 
+      select(one_of('CC', 'USSenIR_2012')), 
+    by='CC') %>%
+  full_join(
+    county.2014 %>% 
+      mutate(USSenIR_2014 = USSenIR) %>% 
+      select(one_of('CC', 'USSenIR_2014')), 
+    by='CC') %>%
+  arrange(CC)
+
+
+write.csv(USSenIR, file="USSenIR By County.csv")
+
+```
+
+
+
+```{r}
+USSenDFL <- 
+    county.1994 %>% 
+      mutate(USSenDFL_1994 = USSenDFL) %>% 
+      select(one_of('CC', 'USSenDFL_1994')) %>% 
+  full_join(
+    county.1996 %>% 
+      mutate(USSenDFL_1996 = USSenDFL) %>% 
+      select(one_of('CC', 'USSenDFL_1996')), 
+    by='CC') %>%
+  full_join(
+    county.2000 %>% 
+      mutate(USSenDFL_2000 = USSenDFL) %>% 
+      select(one_of('CC', 'USSenDFL_2000')), 
+    by='CC') %>%
+  full_join(
+    county.2002 %>% 
+      mutate(USSenDFL_2002 = USSenDFL) %>% 
+      select(one_of('CC', 'USSenDFL_2002')), 
+    by='CC') %>%
+  full_join(
+    county.2006 %>% 
+      mutate(USSenDFL_2006 = USSenDFL) %>% 
+      select(one_of('CC', 'USSenDFL_2006')), 
+    by='CC') %>%
+  full_join(
+    county.2008 %>% 
+      mutate(USSenDFL_2008 = USSenDFL) %>% 
+      select(one_of('CC', 'USSenDFL_2008')), 
+    by='CC') %>%
+  full_join(
+    county.2012 %>% 
+      mutate(USSenDFL_2012 = USSenDFL) %>% 
+      select(one_of('CC', 'USSenDFL_2012')), 
+    by='CC') %>%
+  full_join(
+    county.2014 %>% 
+      mutate(USSenDFL_2014 = USSenDFL) %>% 
+      select(one_of('CC', 'USSenDFL_2014')), 
+    by='CC') %>%
+  arrange(CC)
+
+
+write.csv(USSenDFL, file="USSenDFL By County.csv")
+```
+
+
