@@ -68,7 +68,7 @@ county.1992 <- X1992_results %>%
             turnout = sum(Ballots),
             PresIR = sum(PresIR),
             PresDFL = sum(PresDFL),
-            PresOther = sum(PresOther),
+            PresALL = sum(PresOther),
             CongIR = sum(CongIR),
             CongDFL = sum(CongDFL),
             CongOther = sum(CongOther)
@@ -199,14 +199,14 @@ county.2002 <- X2002_results %>%
             turnout = sum(Ballots),
             CongIR = sum(as.numeric(CongR), na.rm = TRUE),
             CongDFL = sum(as.numeric(CongDFL), na.rm = TRUE),
-            CongAll = 
+            CongOther = 
               sum(as.numeric(CongGP), na.rm = TRUE) + 
               sum(as.numeric(CongIP), na.rm = TRUE) + 
               sum(as.numeric(CongNNT), na.rm = TRUE) + 
               sum(as.numeric(CongWI), na.rm = TRUE),
             GovIR = sum(as.numeric(GovR), na.rm = TRUE),
             GovDFL = sum(as.numeric(GovDFL), na.rm = TRUE),
-            GovAll = 
+            GovOther = 
               sum(as.numeric(GovGP), na.rm = TRUE) +
               sum(as.numeric(GovIP), na.rm = TRUE) +
               sum(as.numeric(GovCP), na.rm = TRUE) +
@@ -263,13 +263,19 @@ county.2006 <- X2006_results %>%
             turnout = sum(as.numeric(TotVoters), na.rm = TRUE),
             CongIR = sum(as.numeric(CongR), na.rm = TRUE),
             CongDFL = sum(as.numeric(CongDFL), na.rm = TRUE),
-            CongAll = sum(as.numeric(CongTOT), na.rm = TRUE),
+            CongOther = sum(as.numeric(CongTOT), na.rm = TRUE) 
+                        - sum(as.numeric(CongR), na.rm = TRUE)
+                        - sum(as.numeric(CongDFL), na.rm = TRUE),
             USSenIR = sum(as.numeric(USSenR), na.rm = TRUE),
             USSenDFL = sum(as.numeric(USSenDFL), na.rm = TRUE),
-            USSenAll = sum(as.numeric(USSenTOT), na.rm = TRUE),
+            USSenOther = sum(as.numeric(USSenTOT), na.rm = TRUE)
+                       - sum(as.numeric(USSenR), na.rm = TRUE)
+                       - sum(as.numeric(USSenDFL), na.rm = TRUE),
             GovIR = sum(as.numeric(GovR), na.rm = TRUE),
             GovDFL = sum(as.numeric(GovDFL), na.rm = TRUE),
-            GovAll = sum(as.numeric(GovTOT), na.rm = TRUE)
+            GovOther = sum(as.numeric(GovTOT), na.rm = TRUE) 
+                       - sum(as.numeric(GovR), na.rm = TRUE)
+                       - sum(as.numeric(GovDFL), na.rm = TRUE)
             )
 colnames(county.2006)[1] <- 'HouseDistID'
 
@@ -291,13 +297,19 @@ county.2008 <- X2008_results %>%
             turnout = sum(TotVoters),
             PresIR = sum(USPRESR),
             PresDFL = sum(USPRESDFL),
-            PresALL = sum(USPRESTOT),
+            PresOther = sum(USPRESTOT)
+                      - sum(USPRESR)
+                      - sum(USPRESDFL),
             USSenIR = sum(USSENR),
             USSenDFL = sum(USSENDFL),
-            USSenAll = sum(USSENTOT),
+            USSenOther =  sum(USSENTOT)
+                        - sum(USSENR)
+                        - sum(USSENDFL),
             CongIR = sum(CONGR),
             CongDFL = sum(CONGDFL),
-            CongALL = sum(CONGTOT)
+            CongOther = sum(CONGTOT)
+                      - sum(CONGR)
+                      - sum(CONGDFL)
             )
 colnames(county.2008)[1] <- 'HouseDistID'
 
@@ -319,10 +331,14 @@ county.2010 <- X2010_results %>%
             turnout = sum(TotVoters),
             CongIR = sum(CONGR),
             CongDFL = sum(CONGDFL),
-            CongAll = sum(CONGTOT),            
+            CongOther = sum(CONGTOT)
+                      - sum(CONGR)
+                      - sum(CONGDFL),            
             GovIR = sum(GOVR),
             GovDFL = sum(GOVDFL),
-            GovAll = sum(GOVTOT)   
+            GovOther = sum(GOVTOT)
+                      -sum(GOVR)
+                      -sum(GOVDFL)
             )
 colnames(county.2010)[1] <- 'HouseDistID'
 
@@ -343,13 +359,19 @@ county.2012 <- X2012_results %>%
             turnout = sum(TOTVOTING),
             PresIR = sum(USPRSR),
             PresDFL = sum(USPRSDFL),
-            PresALL = sum(USPRSTOTAL),
+            PresOther = sum(USPRSTOTAL)
+                      - sum(USPRSR)
+                      - sum(USPRSDFL),
             USSenIR = sum(USSENR),
             USSenDFL = sum(USSENDFL),
-            USSenAll = sum(USSENTOTAL),
+            USSenOther = sum(USSENTOTAL)
+                      -sum(USSENR)
+                      -sum(USSENDFL),
             CongIR = sum(USREPR),
             CongDFL = sum(USREPDFL),
-            CongALL = sum(USREPTOTAL)
+            CongOther = sum(USREPTOTAL)
+                        - sum(USREPR)
+                        - sum(USREPDFL)
             )
 colnames(county.2012)[1] <- 'HouseDistID'
 
@@ -370,13 +392,13 @@ county.2014 <- X2014_results %>%
             turnout = sum(TOTVOTING),
             CongIR = sum(USREPR),
             CongDFL = sum(USREPDFL),
-            CongALL = sum(USREPTOTAL),            
+            CongOther = sum(USREPTOTAL) - sum(USREPR) - sum(USREPDFL),            
             USSenIR = sum(USSENR),
             USSenDFL = sum(USSENDFL),
-            USSenAll = sum(USSENTOTAL),
+            USSenOther = sum(USSENTOTAL) - sum(USSENR) - sum(USSENDFL),
             GovIR = sum(MNGOVR),
             GovDFL = sum(MNGOVDFL),
-            GovALL = sum(MNGOVTOTAL)   
+            GovOther = sum(MNGOVTOTAL) - sum(MNGOVR) - sum(MNGOVDFL)     
             )
 colnames(county.2014)[1] <- 'HouseDistID'
 
@@ -398,10 +420,10 @@ county.2016 <- X2016_results %>%
             turnout = sum(TOTVOTING),
             PresIR = sum(USPRSR),
             PresDFL = sum(USPRSDFL),
-            PresALL = sum(USPRSTOTAL),
+            PresOther = sum(USPRSTOTAL) - sum(USPRSR) - sum(USPRSDFL),
             CongIR = sum(USREPR),
             CongDFL = sum(USREPDFL),
-            CongALL = sum(USREPTOTAL)
+            CongOther = sum(USREPTOTAL) - sum(USREPR) - sum(USREPDFL)
             )
 colnames(county.2016)[1] <- 'HouseDistID'
 
@@ -476,6 +498,7 @@ reg <- county.1992 %>%
     by='HouseDistID') %>%
   arrange(HouseDistID)
   
+write.csv(reg, file="7am Reg Data By House District.csv")
 ```
 
 
@@ -545,7 +568,7 @@ turnout <- county.1992 %>%
     by='HouseDistID') %>%
   arrange(HouseDistID)
 
-
+write.csv(turnout, file="Turnout Data By House District.csv")
 ```
 
 ```{r}
@@ -558,5 +581,362 @@ plot(turnoutTotal, type='l')
 ```
 
 
+```{r}
+CongIR <- county.1992 %>% 
+  mutate(CongIR_1992 = CongIR) %>% 
+  select(one_of('HouseDistID', 'CongIR_1992')) %>% 
+  full_join(
+    county.1994 %>% 
+      mutate(CongIR_1994 = CongIR) %>% 
+      select(one_of('HouseDistID', 'CongIR_1994')), 
+    by='HouseDistID') %>% 
+  full_join(
+    county.1996 %>% 
+      mutate(CongIR_1996 = CongIR) %>% 
+      select(one_of('HouseDistID', 'CongIR_1996')), 
+    by='HouseDistID') %>%
+  full_join(
+    county.1998 %>% 
+      mutate(CongIR_1998 = CongIR) %>% 
+      select(one_of('HouseDistID', 'CongIR_1998')), 
+    by='HouseDistID') %>%
+  full_join(
+    county.2000 %>% 
+      mutate(CongIR_2000 = CongIR) %>% 
+      select(one_of('HouseDistID', 'CongIR_2000')), 
+    by='HouseDistID') %>%
+  full_join(
+    county.2002 %>% 
+      mutate(CongIR_2002 = CongIR) %>% 
+      select(one_of('HouseDistID', 'CongIR_2002')), 
+    by='HouseDistID') %>%
+  full_join(
+    county.2004 %>% 
+      mutate(CongIR_2004 = CongIR) %>% 
+      select(one_of('HouseDistID', 'CongIR_2004')), 
+    by='HouseDistID') %>%
+    full_join(
+    county.2006 %>% 
+      mutate(CongIR_2006 = CongIR) %>% 
+      select(one_of('HouseDistID', 'CongIR_2006')), 
+    by='HouseDistID') %>%
+  full_join(
+    county.2008 %>% 
+      mutate(CongIR_2008 = CongIR) %>% 
+      select(one_of('HouseDistID', 'CongIR_2008')), 
+    by='HouseDistID') %>%
+  full_join(
+    county.2010 %>% 
+      mutate(CongIR_2010 = CongIR) %>% 
+      select(one_of('HouseDistID', 'CongIR_2010')), 
+    by='HouseDistID') %>%
+  full_join(
+    county.2012 %>% 
+      mutate(CongIR_2012 = CongIR) %>% 
+      select(one_of('HouseDistID', 'CongIR_2012')), 
+    by='HouseDistID') %>%
+  full_join(
+    county.2014 %>% 
+      mutate(CongIR_2014 = CongIR) %>% 
+      select(one_of('HouseDistID', 'CongIR_2014')), 
+    by='HouseDistID') %>%
+  full_join(
+    county.2016 %>% 
+      mutate(CongIR_2016 = CongIR) %>% 
+      select(one_of('HouseDistID', 'CongIR_2016')), 
+    by='HouseDistID') %>%
+  arrange(HouseDistID)
 
 
+write.csv(CongIR, file="CongIR By House District.csv")
+```
+
+
+
+```{r}
+CongDFL <- county.1992 %>% 
+  mutate(CongDFL_1992 = CongDFL) %>% 
+  select(one_of('HouseDistID', 'CongDFL_1992')) %>% 
+  full_join(
+    county.1994 %>% 
+      mutate(CongDFL_1994 = CongDFL) %>% 
+      select(one_of('HouseDistID', 'CongDFL_1994')), 
+    by='HouseDistID') %>% 
+  full_join(
+    county.1996 %>% 
+      mutate(CongDFL_1996 = CongDFL) %>% 
+      select(one_of('HouseDistID', 'CongDFL_1996')), 
+    by='HouseDistID') %>%
+  full_join(
+    county.1998 %>% 
+      mutate(CongDFL_1998 = CongDFL) %>% 
+      select(one_of('HouseDistID', 'CongDFL_1998')), 
+    by='HouseDistID') %>%
+  full_join(
+    county.2000 %>% 
+      mutate(CongDFL_2000 = CongDFL) %>% 
+      select(one_of('HouseDistID', 'CongDFL_2000')), 
+    by='HouseDistID') %>%
+  full_join(
+    county.2002 %>% 
+      mutate(CongDFL_2002 = CongDFL) %>% 
+      select(one_of('HouseDistID', 'CongDFL_2002')), 
+    by='HouseDistID') %>%
+  full_join(
+    county.2004 %>% 
+      mutate(CongDFL_2004 = CongDFL) %>% 
+      select(one_of('HouseDistID', 'CongDFL_2004')), 
+    by='HouseDistID') %>%
+    full_join(
+    county.2006 %>% 
+      mutate(CongDFL_2006 = CongDFL) %>% 
+      select(one_of('HouseDistID', 'CongDFL_2006')), 
+    by='HouseDistID') %>%
+  full_join(
+    county.2008 %>% 
+      mutate(CongDFL_2008 = CongDFL) %>% 
+      select(one_of('HouseDistID', 'CongDFL_2008')), 
+    by='HouseDistID') %>%
+  full_join(
+    county.2010 %>% 
+      mutate(CongDFL_2010 = CongDFL) %>% 
+      select(one_of('HouseDistID', 'CongDFL_2010')), 
+    by='HouseDistID') %>%
+  full_join(
+    county.2012 %>% 
+      mutate(CongDFL_2012 = CongDFL) %>% 
+      select(one_of('HouseDistID', 'CongDFL_2012')), 
+    by='HouseDistID') %>%
+  full_join(
+    county.2014 %>% 
+      mutate(CongDFL_2014 = CongDFL) %>% 
+      select(one_of('HouseDistID', 'CongDFL_2014')), 
+    by='HouseDistID') %>%
+  full_join(
+    county.2016 %>% 
+      mutate(CongDFL_2016 = CongDFL) %>% 
+      select(one_of('HouseDistID', 'CongDFL_2016')), 
+    by='HouseDistID') %>%
+  arrange(HouseDistID)
+
+
+write.csv(CongDFL, file="CongDFL By House District.csv")
+```
+
+
+
+
+
+```{r}
+CongOther <- county.1992 %>% 
+  mutate(CongOther_1992 = CongOther) %>% 
+  select(one_of('HouseDistID', 'CongOther_1992')) %>% 
+  full_join(
+    county.1994 %>% 
+      mutate(CongOther_1994 = CongOther) %>% 
+      select(one_of('HouseDistID', 'CongOther_1994')), 
+    by='HouseDistID') %>% 
+  full_join(
+    county.1996 %>% 
+      mutate(CongOther_1996 = CongOther) %>% 
+      select(one_of('HouseDistID', 'CongOther_1996')), 
+    by='HouseDistID') %>%
+  full_join(
+    county.1998 %>% 
+      mutate(CongOther_1998 = CongOther) %>% 
+      select(one_of('HouseDistID', 'CongOther_1998')), 
+    by='HouseDistID') %>%
+  full_join(
+    county.2000 %>% 
+      mutate(CongOther_2000 = CongOther) %>% 
+      select(one_of('HouseDistID', 'CongOther_2000')), 
+    by='HouseDistID') %>%
+  full_join(
+    county.2002 %>% 
+      mutate(CongOther_2002 = CongOther) %>% 
+      select(one_of('HouseDistID', 'CongOther_2002')), 
+    by='HouseDistID') %>%
+  full_join(
+    county.2004 %>% 
+      mutate(CongOther_2004 = CongOther) %>% 
+      select(one_of('HouseDistID', 'CongOther_2004')), 
+    by='HouseDistID') %>%
+    full_join(
+    county.2006 %>% 
+      mutate(CongOther_2006 = CongOther) %>% 
+      select(one_of('HouseDistID', 'CongOther_2006')), 
+    by='HouseDistID') %>%
+  full_join(
+    county.2008 %>% 
+      mutate(CongOther_2008 = CongOther) %>% 
+      select(one_of('HouseDistID', 'CongOther_2008')), 
+    by='HouseDistID') %>%
+  full_join(
+    county.2010 %>% 
+      mutate(CongOther_2010 = CongOther) %>% 
+      select(one_of('HouseDistID', 'CongOther_2010')), 
+    by='HouseDistID') %>%
+  full_join(
+    county.2012 %>% 
+      mutate(CongOther_2012 = CongOther) %>% 
+      select(one_of('HouseDistID', 'CongOther_2012')), 
+    by='HouseDistID') %>%
+  full_join(
+    county.2014 %>% 
+      mutate(CongOther_2014 = CongOther) %>% 
+      select(one_of('HouseDistID', 'CongOther_2014')), 
+    by='HouseDistID') %>%
+  full_join(
+    county.2016 %>% 
+      mutate(CongOther_2016 = CongOther) %>% 
+      select(one_of('HouseDistID', 'CongOther_2016')), 
+    by='HouseDistID') %>%
+  arrange(HouseDistID)
+
+
+write.csv(CongOther, file="CongOther By House District.csv")
+```
+
+
+
+
+```{r}
+USSenOther <- 
+    county.1994 %>% 
+      mutate(USSenOther_1994 = USSenOther) %>% 
+      select(one_of('HouseDistID', 'USSenOther_1994')) %>% 
+  full_join(
+    county.1996 %>% 
+      mutate(USSenOther_1996 = USSenOther) %>% 
+      select(one_of('HouseDistID', 'USSenOther_1996')), 
+    by='HouseDistID') %>%
+  full_join(
+    county.2000 %>% 
+      mutate(USSenOther_2000 = USSenOther) %>% 
+      select(one_of('HouseDistID', 'USSenOther_2000')), 
+    by='HouseDistID') %>%
+  full_join(
+    county.2002 %>% 
+      mutate(USSenOther_2002 = USSenOther) %>% 
+      select(one_of('HouseDistID', 'USSenOther_2002')), 
+    by='HouseDistID') %>%
+  full_join(
+    county.2006 %>% 
+      mutate(USSenOther_2006 = USSenOther) %>% 
+      select(one_of('HouseDistID', 'USSenOther_2006')), 
+    by='HouseDistID') %>%
+  full_join(
+    county.2008 %>% 
+      mutate(USSenOther_2008 = USSenOther) %>% 
+      select(one_of('HouseDistID', 'USSenOther_2008')), 
+    by='HouseDistID') %>%
+  full_join(
+    county.2012 %>% 
+      mutate(USSenOther_2012 = USSenOther) %>% 
+      select(one_of('HouseDistID', 'USSenOther_2012')), 
+    by='HouseDistID') %>%
+  full_join(
+    county.2014 %>% 
+      mutate(USSenOther_2014 = USSenOther) %>% 
+      select(one_of('HouseDistID', 'USSenOther_2014')), 
+    by='HouseDistID') %>%
+  arrange(HouseDistID)
+
+
+write.csv(USSenOther, file="USSenOther By House District.csv")
+```
+
+```{r}
+USSenIR <- 
+    county.1994 %>% 
+      mutate(USSenIR_1994 = USSenIR) %>% 
+      select(one_of('HouseDistID', 'USSenIR_1994')) %>% 
+  full_join(
+    county.1996 %>% 
+      mutate(USSenIR_1996 = USSenIR) %>% 
+      select(one_of('HouseDistID', 'USSenIR_1996')), 
+    by='HouseDistID') %>%
+  full_join(
+    county.2000 %>% 
+      mutate(USSenIR_2000 = USSenIR) %>% 
+      select(one_of('HouseDistID', 'USSenIR_2000')), 
+    by='HouseDistID') %>%
+  full_join(
+    county.2002 %>% 
+      mutate(USSenIR_2002 = USSenIR) %>% 
+      select(one_of('HouseDistID', 'USSenIR_2002')), 
+    by='HouseDistID') %>%
+  full_join(
+    county.2006 %>% 
+      mutate(USSenIR_2006 = USSenIR) %>% 
+      select(one_of('HouseDistID', 'USSenIR_2006')), 
+    by='HouseDistID') %>%
+  full_join(
+    county.2008 %>% 
+      mutate(USSenIR_2008 = USSenIR) %>% 
+      select(one_of('HouseDistID', 'USSenIR_2008')), 
+    by='HouseDistID') %>%
+  full_join(
+    county.2012 %>% 
+      mutate(USSenIR_2012 = USSenIR) %>% 
+      select(one_of('HouseDistID', 'USSenIR_2012')), 
+    by='HouseDistID') %>%
+  full_join(
+    county.2014 %>% 
+      mutate(USSenIR_2014 = USSenIR) %>% 
+      select(one_of('HouseDistID', 'USSenIR_2014')), 
+    by='HouseDistID') %>%
+  arrange(HouseDistID)
+
+
+write.csv(USSenIR, file="USSenIR By House District.csv")
+
+```
+
+
+
+```{r}
+USSenDFL <- 
+    county.1994 %>% 
+      mutate(USSenDFL_1994 = USSenDFL) %>% 
+      select(one_of('HouseDistID', 'USSenDFL_1994')) %>% 
+  full_join(
+    county.1996 %>% 
+      mutate(USSenDFL_1996 = USSenDFL) %>% 
+      select(one_of('HouseDistID', 'USSenDFL_1996')), 
+    by='HouseDistID') %>%
+  full_join(
+    county.2000 %>% 
+      mutate(USSenDFL_2000 = USSenDFL) %>% 
+      select(one_of('HouseDistID', 'USSenDFL_2000')), 
+    by='HouseDistID') %>%
+  full_join(
+    county.2002 %>% 
+      mutate(USSenDFL_2002 = USSenDFL) %>% 
+      select(one_of('HouseDistID', 'USSenDFL_2002')), 
+    by='HouseDistID') %>%
+  full_join(
+    county.2006 %>% 
+      mutate(USSenDFL_2006 = USSenDFL) %>% 
+      select(one_of('HouseDistID', 'USSenDFL_2006')), 
+    by='HouseDistID') %>%
+  full_join(
+    county.2008 %>% 
+      mutate(USSenDFL_2008 = USSenDFL) %>% 
+      select(one_of('HouseDistID', 'USSenDFL_2008')), 
+    by='HouseDistID') %>%
+  full_join(
+    county.2012 %>% 
+      mutate(USSenDFL_2012 = USSenDFL) %>% 
+      select(one_of('HouseDistID', 'USSenDFL_2012')), 
+    by='HouseDistID') %>%
+  full_join(
+    county.2014 %>% 
+      mutate(USSenDFL_2014 = USSenDFL) %>% 
+      select(one_of('HouseDistID', 'USSenDFL_2014')), 
+    by='HouseDistID') %>%
+  arrange(HouseDistID)
+
+
+write.csv(USSenDFL, file="USSenDFL By House District.csv")
+```
