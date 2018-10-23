@@ -33,7 +33,7 @@ X2016_results <- read_excel("Data/General Election 1992-2016/2016_results.xlsx",
 
 ```{r}
 CCFIPS <- X1994_results %>% select(one_of(c('CC', 'FIPS')))
-
+CCNAME <- unique(X2016_results %>% select(one_of(c('COUNTYNAME', 'COUNTYCODE'))))
 ```
 
 
@@ -889,4 +889,7 @@ USSenDFL <-
 write.csv(USSenDFL, file="USSenDFL By County.csv")
 ```
 
+```{r}
 
+write.csv(CCNAME, file='CCode to Name.csv')
+```
