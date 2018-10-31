@@ -46,11 +46,26 @@ getCPCTCode <- function(CountyCode, PCTCode){
   return(CountyCode+PCTCode)
 }
 
-pctDist <- X2016_results %>%
-  select(one_of(c( "PCTNAME", "COUNTYCODE", "PCTCODE", "CONGDIST"))) %>%
-  mutate(CPCTCode=getCPCTCode(COUNTYCODE, PCTCODE))
+getFIPSVTD <- function(VTDID){
+  VTDID <- as.numeric(VTDID)
+  return(VTDID-270000000)
+}
 
-colnames(pctDist) <- c("pctDist_PCTNAME","pctDist_COUNTYCODE","pctDist_PCTCODE","pctDist_CONGDIST","CPCTCode")
+getFIPS_VTD <- function(FIPS, PCTCode){
+  FIPS <- as.numeric(FIPS) * 10000
+  PCTCode <- as.numeric(PCTCode) %% 10000
+  
+  return(FIPS+PCTCode)
+}
+
+pctDist <- X2016_results %>%
+  select(one_of(c( "PCTNAME", "COUNTYCODE", "PCTCODE", "CONGDIST", "VTDID"))) %>%
+  mutate(CPCTCode=getCPCTCode(COUNTYCODE, PCTCODE)) %>%
+  mutate(FIPSVTD = getFIPSVTD(VTDID)) %>%
+  select(one_of(c( "PCTNAME", "COUNTYCODE", "CONGDIST", "CPCTCode", "FIPSVTD")))
+  
+
+colnames(pctDist) <- c("pctDist_PCTNAME","pctDist_COUNTYCODE","pctDist_CONGDIST","CPCTCode", "FIPSVTD")
 ```
 
 
@@ -59,10 +74,10 @@ colnames(pctDist) <- c("pctDist_PCTNAME","pctDist_COUNTYCODE","pctDist_PCTCODE",
 ## 1992
 ```{r}
 colnames(X1992_results)[which(colnames(X1992_results) == '7am')] = 'reg'
-colnames(X1992_results)[which(colnames(X1992_results) == 'FIPS_VTD')] = 'CPCTCode'
-X1992_results$CPCTCode <- as.numeric(X1992_results$CPCTCode)
+colnames(X1992_results)[which(colnames(X1992_results) == 'FIPS_VTD')] = 'FIPSVTD'
+X1992_results$FIPSVTD <- as.numeric(X1992_results$FIPSVTD)
 county.1992 <- X1992_results %>%
-  left_join(pctDist, by='CPCTCode' ) %>%
+  left_join(pctDist, by='FIPSVTD' ) %>%
   group_by(pctDist_CONGDIST) %>%
   summarise(reg = sum(reg), 
             turnout = sum(Ballots),
@@ -84,11 +99,11 @@ summary(county.1992)
 
 ```{r}
 colnames(X1994_results)[which(colnames(X1994_results) == '7am')] = 'reg'
-colnames(X1994_results)[which(colnames(X1994_results) == 'FIPS_VTD')] = 'CPCTCode'
-X1994_results$CPCTCode <- as.numeric(X1994_results$CPCTCode)
+colnames(X1994_results)[which(colnames(X1994_results) == 'FIPS_VTD')] = 'FIPSVTD'
+X1994_results$FIPSVTD <- as.numeric(X1994_results$FIPSVTD)
 
 county.1994 <- X1994_results %>%
-  left_join(pctDist, by='CPCTCode' ) %>%
+  left_join(pctDist, by='FIPSVTD' ) %>%
   group_by(pctDist_CONGDIST) %>%
   summarise(reg = sum(reg),
             turnout = sum(Ballots),
@@ -113,10 +128,10 @@ summary(county.1994)
 
 ```{r}
 colnames(X1996_results)[which(colnames(X1996_results) == '7am')] = 'reg'
-colnames(X1996_results)[which(colnames(X1996_results) == 'FIPS_VTD')] = 'CPCTCode'
-X1996_results$CPCTCode <- as.numeric(X1996_results$CPCTCode)
+colnames(X1996_results)[which(colnames(X1996_results) == 'FIPS_VTD')] = 'FIPSVTD'
+X1996_results$FIPSVTD <- as.numeric(X1996_results$FIPSVTD)
 county.1996 <- X1996_results %>%
-  left_join(pctDist, by='CPCTCode' ) %>%
+  left_join(pctDist, by='FIPSVTD' ) %>%
   group_by(pctDist_CONGDIST) %>%
   summarise(reg = sum(reg),
             turnout = sum(Ballots),
@@ -140,11 +155,11 @@ summary(county.1996)
 
 ```{r}
 colnames(X1998_results)[which(colnames(X1998_results) == '7am')] = 'reg'
-colnames(X1998_results)[which(colnames(X1998_results) == 'FIPS_VTD')] = 'CPCTCode'
-X1998_results$CPCTCode <- as.numeric(X1998_results$CPCTCode)
+colnames(X1998_results)[which(colnames(X1998_results) == 'FIPS_VTD')] = 'FIPSVTD'
+X1998_results$FIPSVTD <- as.numeric(X1998_results$FIPSVTD)
 
 county.1998 <- X1998_results %>%
-  left_join(pctDist, by='CPCTCode' ) %>%
+  left_join(pctDist, by='FIPSVTD' ) %>%
   group_by(pctDist_CONGDIST) %>%
   summarise(reg = sum(reg),
             turnout = sum(Ballots),
@@ -940,3 +955,21 @@ USSenDFL <-
 
 write.csv(USSenDFL, file="USSenDFL By House District.csv")
 ```
+
+
+
+
+
+
+
+
+```{r}
+
+
+
+
+```
+
+
+
+
