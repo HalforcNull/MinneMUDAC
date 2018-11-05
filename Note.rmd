@@ -589,9 +589,10 @@ write.csv(turnout, file="Turnout Data By House District.csv")
 ```{r}
 turnout$HouseDistID[is.na(turnout$HouseDistID)] = 0
 
-temp <- turnout[which(turnout$HouseDistID != 0),][,-1]
+temp <- turnout[,-1]
 turnoutTotal <- colSums(temp, na.rm = TRUE)
-plot(turnoutTotal, type='l')
+year <- seq(1992,2016,2)
+plot(x = year, y = turnoutTotal, type='l')
 
 ```
 

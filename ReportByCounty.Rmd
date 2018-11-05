@@ -1,0 +1,141 @@
+---
+title: "Report By County"
+author: "Runan Yao"
+date: "November 1, 2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(randomForest)
+library(dplyr)
+```
+
+
+
+
+
+```{r}
+
+dat.set <- read.csv('Data/CountyDataset6.csv')
+colnames(dat.set)
+
+dat.set$SenR <- dat.set$SenR/dat.set$TotalPop
+dat.set$SenD <- dat.set$SenD/dat.set$TotalPop
+dat.set$SenThird <- dat.set$SenThird/dat.set$TotalPop
+
+dat.set$CongR <- dat.set$CongR/dat.set$TotalPop
+dat.set$CongD <- dat.set$CongD/dat.set$TotalPop
+dat.set$CongThird <- dat.set$CongThird/dat.set$TotalPop
+
+dat.set$GovR <- dat.set$GovR/dat.set$TotalPop
+dat.set$GovD <- dat.set$GovD/dat.set$TotalPop
+dat.set$GovThird <- dat.set$GovThird/dat.set$TotalPop
+
+dat.set$R <- ifelse(dat.set$SenR > dat.set$CongR, 
+                      ifelse( dat.set$SenR > dat.set$GovR, dat.set$SenR, dat.set$GovR),
+                      ifelse( dat.set$CongR > dat.set$GovR, dat.set$CongR, dat.set$GovR))
+dat.set$D <- ifelse(dat.set$SenD > dat.set$CongD, 
+                      ifelse( dat.set$SenD > dat.set$GovD, dat.set$SenD, dat.set$GovD),
+                      ifelse( dat.set$CongD > dat.set$GovD, dat.set$CongD, dat.set$GovD))
+dat.set$Third <- ifelse(dat.set$SenThird > dat.set$CongThird, 
+                      ifelse( dat.set$SenThird > dat.set$GovThird, dat.set$SenThird, dat.set$GovThird),
+                      ifelse( dat.set$CongThird > dat.set$GovThird, dat.set$CongThird, dat.set$GovThird))
+
+dat.set$IsPresR <- ifelse(dat.set$Year < 2017, 0, 1)
+
+
+
+training.tar <- dat.set %>% 
+  select(one_of(c('R', 'D', 'Third')))
+
+
+training.dat <- dat.set %>% select(one_of(c('PRESyear', 'SENyear', 'GOVyear', 'Age25to44', 'Age45to64', 'Over65', 'Age0to24', "White",  "Black" ,"Natives","Asian","Hispanic","PacificIslander", "Unemployment.Rate", "Land.Area","PopulationDensity", "IsPresR")))
+#, "SENincumbent", "GOVincumbent"
+training.tar[which(is.na(training.tar))] <- 0.01
+training.dat[which(is.na(training.dat))] <- 0.01
+
+  training.tar[which(training.tar$R == 0),]$R <- 0.01
+error = 0
+for( i in 1:100){
+  idx <- sample(nrow(training.dat), 100)
+  
+  t.tar <- training.tar[-idx,]$R
+  t.dat <- training.dat[-idx,]
+  
+  tst.dat <- training.dat[idx,]
+  tst.tar <- training.tar[idx,]$R
+  
+  Repforest <- randomForest(x = t.dat, y = t.tar)
+  
+  prd <- predict(Repforest, tst.dat)
+  error <- error + mean(abs((prd-tst.tar)/tst.tar))
+}
+
+error/100
+
+
+
+Repforest$importance[order(Repforest$importance, decreasing = TRUE),]
+DFLforest$importance[order(DFLforest$importance, decreasing = TRUE),]
+
+
+RepLm <- lm(training.tar$R ~ training.dat$GOVyear + training.dat$PopulationDensity + training.dat$Over65 + training.dat$SENyear + training.dat$Age25to44 + training.dat$Age45to64 + training.dat$Black + training.dat$Unemployment.Rate)
+
+summary(RepLm)
+
+DFLLm <- lm(training.tar$D ~ training.dat$GOVyear + training.dat$PopulationDensity + training.dat$Over65 + training.dat$SENyear + training.dat$Age25to44 + training.dat$Age45to64 + training.dat$Black + training.dat$Unemployment.Rate)
+
+summary(DFLLm)
+
+```
+
+
+
+
+
+```{r}
+dat.set <- read.csv('Data/CountyDataset6.csv')
+colnames(dat.set)
+
+dat.set$R <- ifelse(dat.set$SenR > dat.set$CongR, 
+                      ifelse( dat.set$SenR > dat.set$GovR, dat.set$SenR, dat.set$GovR),
+                      ifelse( dat.set$CongR > dat.set$GovR, dat.set$CongR, dat.set$GovR))
+dat.set$D <- ifelse(dat.set$SenD > dat.set$CongD, 
+                      ifelse( dat.set$SenD > dat.set$GovD, dat.set$SenD, dat.set$GovD),
+                      ifelse( dat.set$CongD > dat.set$GovD, dat.set$CongD, dat.set$GovD))
+dat.set$Third <- ifelse(dat.set$SenThird > dat.set$CongThird, 
+                      ifelse( dat.set$SenThird > dat.set$GovThird, dat.set$SenThird, dat.set$GovThird),
+                      ifelse( dat.set$CongThird > dat.set$GovThird, dat.set$CongThird, dat.set$GovThird))
+
+training.tar <- dat.set %>% 
+  select(one_of(c('R', 'D', 'Third')))
+
+
+training.dat <- dat.set %>% select(one_of(c('PRESyear', 'SENyear', 'GOVyear', 'Age25to44', 'Age45to64', 'Over65', 'Age0to24', "White",  "Black" ,"Natives","Asian","Hispanic","PacificIslander", "Unemployment.Rate", "Land.Area","PopulationDensity", "IsPresR")))
+
+
+
+training.tar[which(is.na(training.tar))] <- 0.01
+training.dat[which(is.na(training.dat))] <- 0.01
+
+training.tar[which(training.tar$R == 0),]$R <- 0.01
+
+t.idx <- which(dat.set$Year == 2016)
+
+Repforest <- randomForest(x = training.dat, y = training.tar$R)
+test.dat <- training.dat[t.idx,]
+
+errorValue <- predict(Repforest,test.dat) - training.tar$R[t.idx]
+error <- abs(errorValue)
+
+
+DFLforest <- randomForest(x = training.dat, y = training.tar$D)
+test.dat <- training.dat[t.idx,]
+
+errorValue <- predict(DFLforest,test.dat) - training.tar$R[t.idx]
+error <- abs(errorValue) + error
+
+
+sum(error)
+```
