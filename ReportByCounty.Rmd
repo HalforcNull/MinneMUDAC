@@ -137,5 +137,5 @@ errorValue <- predict(DFLforest,test.dat) - training.tar$R[t.idx]
 error <- abs(errorValue) + error
 
 
-sum(error)
+sum(error) / sum(training.tar[t.idx,])
 ```
